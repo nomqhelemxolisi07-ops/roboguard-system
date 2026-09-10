@@ -12,14 +12,14 @@ st.markdown("""
     .stButton>button:hover { background-color: #1e4620; color: white; }
     .css-1r6slb0 { background-color: #1e4620; color: white; }
     </style>
-""", unsafe_index=True)
+""", unsafe_allow_html=True)
 
 # --- NAVIGATION SIDEBAR ---
 st.sidebar.title("🛡️ ROBO GUARD Network")
 st.sidebar.markdown("*Preserving Zimbabwe's Legacy*")
 page = st.sidebar.radio("Explore Portal:", ["🏛️ Visitor Information Hub", "🧠 Interactive Heritage Quiz", "🤖 Heritage AI Chatbot"])
 
-st.sidebar.info("🌍 scan the QR code at any heritage site to interact live!")
+st.sidebar.info("🌍 Scan the QR code at any heritage site to interact live!")
 
 # ==========================================
 # PAGE 1: VISITOR INFORMATION HUB
