@@ -3,7 +3,6 @@ import re
 import textwrap
 from html import escape
 import streamlit as st
-import streamlit.components.v1 as components
 
 st.set_page_config(
     page_title="ROBO GUIDE | Zimbabwe Heritage Explorer",
@@ -479,6 +478,63 @@ st.markdown(
 
     .footer strong {
         color: #D7B678;
+    }
+
+    .image-explorer-card {
+        background: #261F1A;
+        border: 1px solid #514137;
+        border-radius: 16px;
+        padding: 0.85rem;
+        margin-bottom: 0.85rem;
+        box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+    }
+
+    .protect-focus {
+        display: inline-block;
+        background: #6D3E31;
+        color: #F3DFC9;
+        border: 1px solid #965944;
+        border-radius: 999px;
+        padding: 0.28rem 0.58rem;
+        font-size: 0.74rem;
+        font-weight: 850;
+        margin-bottom: 0.5rem;
+    }
+
+    .image-note {
+        color: #D7C7B4;
+        line-height: 1.55;
+        font-size: 0.92rem;
+    }
+
+    .pronounce-card {
+        background: linear-gradient(135deg, #32281F, #3B2B22);
+        border: 1px solid #66503E;
+        border-left: 5px solid #C49A55;
+        border-radius: 15px;
+        padding: 1rem;
+        margin: 0.9rem 0 1rem;
+    }
+
+    .pronounce-word {
+        color: #F0DFC9;
+        font-size: 1.18rem;
+        font-weight: 900;
+        letter-spacing: 0.02em;
+    }
+
+    .pronounce-guide {
+        color: #D6B56F;
+        font-size: 1.05rem;
+        font-weight: 850;
+        margin-top: 0.3rem;
+    }
+
+    .pronounce-note {
+        color: #BAAA98;
+        font-size: 0.84rem;
+        margin-top: 0.35rem;
+        line-height: 1.45;
     }
 
     @media(max-width: 760px) {
@@ -1253,145 +1309,72 @@ QUIZ = {
 
 
 # ============================================================
-# IMAGE EXPLORER + PRONUNCIATION
+# ON-SITE IMAGE EXPLORER + LOCAL PRONUNCIATION GUIDES
 # ============================================================
 
-IMAGE_EXPLORER = {
+PRONUNCIATION = {
+    "matobo": {
+        "English": ("Matobo", "ma-TO-bo", "Keep the vowels clear. The middle 'to' is closer to 'taw' than the English word 'toe'."),
+        "isiNdebele": ("Matobo", "ma-TO-bo", "Biza onkamisa ngokucacileyo; ungayenzi izwakale njenge-English 'toe'."),
+        "Shona": ("Matobo", "ma-TO-bo", "Taura mavhawero akajeka; 'to' haisi English 'toe'."),
+    },
+    "great": {
+        "English": ("Zimbabwe", "zi-MBA-bwe", "Say the syllables cleanly: zi • mba • bwe. Avoid stretching the last syllable into an English 'way'."),
+        "isiNdebele": ("Zimbabwe", "zi-MBA-bwe", "Biza izigaba ngokucacileyo: zi • mba • bwe. Ungaluli u-'bwe' ngendlela yesiNgisi."),
+        "Shona": ("Zimbabwe", "zi-MBA-bwe", "Taura zvikamu zvakajeka: zi • mba • bwe. Usashandure 'bwe' kuita English 'way'."),
+    },
+    "khami": {
+        "English": ("Khami", "KHA-mi", "The 'kh' begins with a firm, slightly breathy k sound; keep the final 'mi' short and clear."),
+        "isiNdebele": ("Khami", "KHA-mi", "U-'kh' uqala ngo-k ophefumulayo kancane; u-'mi' makabe mfutshane futhi acace."),
+        "Shona": ("Khami", "KHA-mi", "'Kh' inotanga nek yakasimba ine mhepo shoma; 'mi' ipfupi uye yakajeka."),
+    },
+}
+
+PROTECTION_IMAGES = {
     "matobo": [
         {
-            "title": "Matobo rock-art landscape",
-            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Ntunjambili%20rock%20art%20site.jpg",
-            "caption": "Rock-art site within the Matobo World Cultural Landscape.",
-            "notice": "Look closely at how the paintings use the rock surface itself as part of the visual story. The art should only be observed — never touched or traced.",
-            "credit": "Wikimedia Commons • Senzeni1 • CC BY-SA 4.0",
+            "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Fondazione_Passar%C3%A9_V40_203.jpg",
+            "title": "Rock art at Nswatugi Cave",
+            "focus": "PROTECT: painted rock surface",
+            "note": "Look closely at the painted animal figures. These pigments are fragile: touching, wetting, rubbing or tracing can permanently damage the art.",
         },
         {
-            "title": "Granite landscape of Matobo",
-            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Matobo%20Hills%20%28Zimbabwe%29%20banner.jpg",
-            "caption": "The granite landscape that gives Matobo its distinctive character.",
-            "notice": "Notice the rounded granite forms and balancing rocks. These landforms, caves and shelters shaped how people used the landscape over thousands of years.",
-            "credit": "Wikimedia Commons • Digr • CC BY-SA",
+            "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Intunjambili_Cave%2C_Matobo.jpg",
+            "title": "Sacred cave landscape",
+            "focus": "PROTECT: cave surface and sacred setting",
+            "note": "The cave setting itself needs care. Visitors should avoid graffiti, smoke, scraping rock surfaces or disturbing culturally sensitive areas.",
         },
     ],
     "great": [
         {
-            "title": "The Great Enclosure",
-            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Great-Zimbabwe.jpg",
-            "caption": "The Great Enclosure at Great Zimbabwe.",
-            "notice": "Look at the scale and curvature of the dry-stone wall. The stones were carefully fitted without mortar, showing remarkable engineering skill.",
-            "credit": "Wikimedia Commons • Jan Derk • Public domain",
+            "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Wall_of_the_great_enclosure%2C_Great_Zimbabwe.JPG",
+            "title": "Wall of the Great Enclosure",
+            "focus": "PROTECT: dry-stone wall face and wall top",
+            "note": "The carefully fitted stones rely on balance and original construction. Climbing, sitting on wall tops or pulling loose stones can accelerate collapse.",
         },
         {
-            "title": "Great Enclosure — closer view",
-            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Great%20Zimbabwe%20%28Great%20Enclosure%29.jpg",
-            "caption": "A closer view of the Great Enclosure's monumental stonework.",
-            "notice": "Study the regular stone courses and the massive wall. The Great Enclosure is one of the most recognisable parts of the site.",
-            "credit": "Wikimedia Commons",
+            "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Zimbabwe_wall.jpg",
+            "title": "Ancient circumferential wall",
+            "focus": "PROTECT: joints, edges and loose masonry",
+            "note": "Notice the exposed edges and joints. Visitors should keep off the masonry and never move stones, even when a stone appears loose.",
         },
     ],
     "khami": [
         {
-            "title": "Khami stone terraces",
-            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/ZW%20Khami%20Ruins.JPG",
-            "caption": "Stone-built passages and terraces at Khami Ruins.",
-            "notice": "Notice how the walls retain and shape the hillside. Khami's builders adapted dry-stone architecture to create raised platforms and terraces.",
-            "credit": "Wikimedia Commons • Digr • CC BY-SA 4.0",
+            "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/ZW_Khami_Ruins.JPG",
+            "title": "Khami terrace walls and passage",
+            "focus": "PROTECT: terrace retaining walls",
+            "note": "Khami's terraces are both archaeological structures and retaining walls. Leaning, climbing or stepping on their edges can disturb fragile masonry.",
         },
         {
-            "title": "Historic view of Khami",
-            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Khami.jpg",
-            "caption": "Historic image of the Khami ruins and their terraced stonework.",
-            "notice": "Compare the layered walls and elevated platforms with Great Zimbabwe's more monumental freestanding walls.",
-            "credit": "Wikimedia Commons • David Randall-MacIver • Public domain",
+            "url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Khami_ruins_%28ZW%29.jpg",
+            "title": "Khami stone-built remains",
+            "focus": "PROTECT: surviving stonework",
+            "note": "The surviving walls preserve construction patterns and archaeological evidence. Stones, pottery and other material should remain exactly where they are found.",
         },
     ],
 }
 
-PRONUNCIATION = {
-    "matobo": {
-        "English": "mah-TOH-boh Hills",
-        "isiNdebele": "mah-TOH-boh",
-        "Shona": "mah-TOH-boh",
-        "speak": "Matobo Hills",
-    },
-    "great": {
-        "English": "Great zim-BAHB-way",
-        "isiNdebele": "Great zim-BAHB-way",
-        "Shona": "Great zim-BAHB-way",
-        "speak": "Great Zimbabwe",
-    },
-    "khami": {
-        "English": "KHAH-mee Ruins",
-        "isiNdebele": "KHAH-mee",
-        "Shona": "KHAH-mee",
-        "speak": "Khami Ruins",
-    },
-}
-
-
-def pronunciation_widget(site_key):
-    info = PRONUNCIATION[site_key]
-    spoken = info["speak"].replace("'", "\\'")
-    phonetic = info[st.session_state.lang]
-    label = {
-        "English": "Hear pronunciation",
-        "isiNdebele": "Lalela ukubizwa",
-        "Shona": "Inzwa mataurirwo",
-    }[st.session_state.lang]
-
-    components.html(
-        f"""
-        <div style="font-family:Arial,sans-serif;background:#2C241E;border:1px solid #5A493C;border-radius:14px;padding:12px 14px;color:#EADDC8;display:flex;gap:12px;align-items:center;justify-content:space-between;">
-            <div>
-                <div style="font-size:12px;color:#C49A55;font-weight:800;text-transform:uppercase;letter-spacing:.08em;">Pronunciation</div>
-                <div style="font-size:17px;font-weight:800;margin-top:3px;">{escape(phonetic)}</div>
-            </div>
-            <button onclick="speakName()" style="background:#8B4F3B;color:#FFF1DE;border:1px solid #A86A4D;border-radius:10px;padding:9px 13px;font-weight:800;cursor:pointer;">🔊 {escape(label)}</button>
-        </div>
-        <script>
-        function speakName() {{
-            if ('speechSynthesis' in window) {{
-                window.speechSynthesis.cancel();
-                const u = new SpeechSynthesisUtterance('{spoken}');
-                u.lang = 'en-ZA';
-                u.rate = 0.78;
-                u.pitch = 1.0;
-                window.speechSynthesis.speak(u);
-            }}
-        }}
-        </script>
-        """,
-        height=80,
-        scrolling=False,
-    )
-
-
-def render_image_explorer(site_key):
-    labels = {
-        "English": ("Image Explorer", "Choose a view", "What to notice"),
-        "isiNdebele": ("Umhloli Wezithombe", "Khetha isithombe", "Ongakunanzelela"),
-        "Shona": ("Muongorori Wemifananidzo", "Sarudza mufananidzo", "Zvekucherechedza"),
-    }
-    title_label, choose_label, notice_label = labels[st.session_state.lang]
-    images = IMAGE_EXPLORER[site_key]
-
-    st.markdown(f"## 🖼️ {title_label}")
-    selected_title = st.selectbox(
-        choose_label,
-        [item["title"] for item in images],
-        key=f"image_explorer_select_{site_key}_{st.session_state.lang}",
-    )
-    item = next(x for x in images if x["title"] == selected_title)
-
-    st.image(item["url"], caption=item["caption"], use_container_width=True)
-    html(
-        f"""
-        <div class="info-card">
-            <p><strong style="color:#D6B56F;">{escape(notice_label)}:</strong><br>{escape(item['notice'])}</p>
-        </div>
-        <div class="source-note">Image credit: {escape(item['credit'])}</div>
-        """
-    )
 
 # ============================================================
 # NAVIGATION HELPERS
@@ -1686,12 +1669,6 @@ def render_home():
                 """
             )
 
-            st.image(
-                IMAGE_EXPLORER[site_key][0]["url"],
-                caption=data["name"],
-                use_container_width=True,
-            )
-
             if st.button(
                 f"{T('explore_site')} {data['name']}",
                 key=f"home_site_button_{site_key}",
@@ -1762,6 +1739,20 @@ def render_site(site_key):
         """
     )
 
+    pronounce_word, pronounce_guide, pronounce_note = PRONUNCIATION[site_key][st.session_state.lang]
+
+    with st.expander("🔊 Local pronunciation guide", expanded=False):
+        html(
+            f"""
+            <div class="pronounce-card">
+                <div class="pronounce-word">{escape(pronounce_word)}</div>
+                <div class="pronounce-guide">{escape(pronounce_guide)}</div>
+                <div class="pronounce-note">{escape(pronounce_note)}</div>
+            </div>
+            """
+        )
+        st.caption("The previous synthetic voice has been removed because browser text-to-speech can fall back to an English voice and distort Zimbabwean names.")
+
     c1, c2, c3 = st.columns(3)
 
     with c1:
@@ -1794,10 +1785,6 @@ def render_site(site_key):
             """
         )
 
-    pronunciation_widget(site_key)
-
-    render_image_explorer(site_key)
-
     st.markdown(f"## {T('history')}")
     html(f'<div class="info-card"><p>{escape(data["history"])}</p></div>')
 
@@ -1814,6 +1801,22 @@ def render_site(site_key):
                 <div class="fact-card">
                     <h4>◆ Heritage Feature</h4>
                     <p>{escape(feature)}</p>
+                </div>
+                """
+            )
+
+    st.markdown("## 📷 Protection Image Explorer")
+    st.caption("These pictures focus on the parts of each heritage site that visitors need to protect most carefully.")
+
+    image_columns = st.columns(2)
+    for image_index, image_data in enumerate(PROTECTION_IMAGES[site_key]):
+        with image_columns[image_index % 2]:
+            st.image(image_data["url"], caption=image_data["title"], use_container_width=True)
+            html(
+                f"""
+                <div class="image-explorer-card">
+                    <div class="protect-focus">{escape(image_data['focus'])}</div>
+                    <div class="image-note">{escape(image_data['note'])}</div>
                 </div>
                 """
             )
