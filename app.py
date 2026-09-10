@@ -3,6 +3,7 @@ import re
 import textwrap
 from html import escape
 import streamlit as st
+import streamlit.components.v1 as components
 
 st.set_page_config(
     page_title="ROBO GUIDE | Zimbabwe Heritage Explorer",
@@ -1252,6 +1253,147 @@ QUIZ = {
 
 
 # ============================================================
+# IMAGE EXPLORER + PRONUNCIATION
+# ============================================================
+
+IMAGE_EXPLORER = {
+    "matobo": [
+        {
+            "title": "Matobo rock-art landscape",
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Ntunjambili%20rock%20art%20site.jpg",
+            "caption": "Rock-art site within the Matobo World Cultural Landscape.",
+            "notice": "Look closely at how the paintings use the rock surface itself as part of the visual story. The art should only be observed — never touched or traced.",
+            "credit": "Wikimedia Commons • Senzeni1 • CC BY-SA 4.0",
+        },
+        {
+            "title": "Granite landscape of Matobo",
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Matobo%20Hills%20%28Zimbabwe%29%20banner.jpg",
+            "caption": "The granite landscape that gives Matobo its distinctive character.",
+            "notice": "Notice the rounded granite forms and balancing rocks. These landforms, caves and shelters shaped how people used the landscape over thousands of years.",
+            "credit": "Wikimedia Commons • Digr • CC BY-SA",
+        },
+    ],
+    "great": [
+        {
+            "title": "The Great Enclosure",
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Great-Zimbabwe.jpg",
+            "caption": "The Great Enclosure at Great Zimbabwe.",
+            "notice": "Look at the scale and curvature of the dry-stone wall. The stones were carefully fitted without mortar, showing remarkable engineering skill.",
+            "credit": "Wikimedia Commons • Jan Derk • Public domain",
+        },
+        {
+            "title": "Great Enclosure — closer view",
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Great%20Zimbabwe%20%28Great%20Enclosure%29.jpg",
+            "caption": "A closer view of the Great Enclosure's monumental stonework.",
+            "notice": "Study the regular stone courses and the massive wall. The Great Enclosure is one of the most recognisable parts of the site.",
+            "credit": "Wikimedia Commons",
+        },
+    ],
+    "khami": [
+        {
+            "title": "Khami stone terraces",
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/ZW%20Khami%20Ruins.JPG",
+            "caption": "Stone-built passages and terraces at Khami Ruins.",
+            "notice": "Notice how the walls retain and shape the hillside. Khami's builders adapted dry-stone architecture to create raised platforms and terraces.",
+            "credit": "Wikimedia Commons • Digr • CC BY-SA 4.0",
+        },
+        {
+            "title": "Historic view of Khami",
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Khami.jpg",
+            "caption": "Historic image of the Khami ruins and their terraced stonework.",
+            "notice": "Compare the layered walls and elevated platforms with Great Zimbabwe's more monumental freestanding walls.",
+            "credit": "Wikimedia Commons • David Randall-MacIver • Public domain",
+        },
+    ],
+}
+
+PRONUNCIATION = {
+    "matobo": {
+        "English": "mah-TOH-boh Hills",
+        "isiNdebele": "mah-TOH-boh",
+        "Shona": "mah-TOH-boh",
+        "speak": "Matobo Hills",
+    },
+    "great": {
+        "English": "Great zim-BAHB-way",
+        "isiNdebele": "Great zim-BAHB-way",
+        "Shona": "Great zim-BAHB-way",
+        "speak": "Great Zimbabwe",
+    },
+    "khami": {
+        "English": "KHAH-mee Ruins",
+        "isiNdebele": "KHAH-mee",
+        "Shona": "KHAH-mee",
+        "speak": "Khami Ruins",
+    },
+}
+
+
+def pronunciation_widget(site_key):
+    info = PRONUNCIATION[site_key]
+    spoken = info["speak"].replace("'", "\\'")
+    phonetic = info[st.session_state.lang]
+    label = {
+        "English": "Hear pronunciation",
+        "isiNdebele": "Lalela ukubizwa",
+        "Shona": "Inzwa mataurirwo",
+    }[st.session_state.lang]
+
+    components.html(
+        f"""
+        <div style="font-family:Arial,sans-serif;background:#2C241E;border:1px solid #5A493C;border-radius:14px;padding:12px 14px;color:#EADDC8;display:flex;gap:12px;align-items:center;justify-content:space-between;">
+            <div>
+                <div style="font-size:12px;color:#C49A55;font-weight:800;text-transform:uppercase;letter-spacing:.08em;">Pronunciation</div>
+                <div style="font-size:17px;font-weight:800;margin-top:3px;">{escape(phonetic)}</div>
+            </div>
+            <button onclick="speakName()" style="background:#8B4F3B;color:#FFF1DE;border:1px solid #A86A4D;border-radius:10px;padding:9px 13px;font-weight:800;cursor:pointer;">🔊 {escape(label)}</button>
+        </div>
+        <script>
+        function speakName() {{
+            if ('speechSynthesis' in window) {{
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance('{spoken}');
+                u.lang = 'en-ZA';
+                u.rate = 0.78;
+                u.pitch = 1.0;
+                window.speechSynthesis.speak(u);
+            }}
+        }}
+        </script>
+        """,
+        height=80,
+        scrolling=False,
+    )
+
+
+def render_image_explorer(site_key):
+    labels = {
+        "English": ("Image Explorer", "Choose a view", "What to notice"),
+        "isiNdebele": ("Umhloli Wezithombe", "Khetha isithombe", "Ongakunanzelela"),
+        "Shona": ("Muongorori Wemifananidzo", "Sarudza mufananidzo", "Zvekucherechedza"),
+    }
+    title_label, choose_label, notice_label = labels[st.session_state.lang]
+    images = IMAGE_EXPLORER[site_key]
+
+    st.markdown(f"## 🖼️ {title_label}")
+    selected_title = st.selectbox(
+        choose_label,
+        [item["title"] for item in images],
+        key=f"image_explorer_select_{site_key}_{st.session_state.lang}",
+    )
+    item = next(x for x in images if x["title"] == selected_title)
+
+    st.image(item["url"], caption=item["caption"], use_container_width=True)
+    html(
+        f"""
+        <div class="info-card">
+            <p><strong style="color:#D6B56F;">{escape(notice_label)}:</strong><br>{escape(item['notice'])}</p>
+        </div>
+        <div class="source-note">Image credit: {escape(item['credit'])}</div>
+        """
+    )
+
+# ============================================================
 # NAVIGATION HELPERS
 # ============================================================
 
@@ -1544,6 +1686,12 @@ def render_home():
                 """
             )
 
+            st.image(
+                IMAGE_EXPLORER[site_key][0]["url"],
+                caption=data["name"],
+                use_container_width=True,
+            )
+
             if st.button(
                 f"{T('explore_site')} {data['name']}",
                 key=f"home_site_button_{site_key}",
@@ -1645,6 +1793,10 @@ def render_site(site_key):
             </div>
             """
         )
+
+    pronunciation_widget(site_key)
+
+    render_image_explorer(site_key)
 
     st.markdown(f"## {T('history')}")
     html(f'<div class="info-card"><p>{escape(data["history"])}</p></div>')
