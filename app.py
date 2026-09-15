@@ -324,7 +324,7 @@ UI = {
         "assistant_title": "ROBO GUIDE Heritage Assistant",
         "assistant_intro": "Ask detailed questions about dates, builders, rock art, architecture, trade, UNESCO status, conservation and comparisons.",
         "ask": "Ask a heritage question", "send": "Ask ROBO GUIDE", "clear": "Clear conversation",
-        "quick": "Quick questions", "footer": "Zimbabwe Heritage Explorer • WRO 2026",
+        "quick": "Quick questions", "footer": "Zimbabwe Heritage Explorer  |  WRO 2026",
     },
     "isiNdebele": {
         "language": "Ulimi", "explore": "Hlola i-ROBO GUIDE", "home": "Ikhaya",
@@ -343,7 +343,7 @@ UI = {
         "assistant_title": "ROBO GUIDE Umsizi Wamagugu",
         "assistant_intro": "Buza ngeminyaka, abakhi, imidwebo yamadwala, izakhiwo, ukuhweba, UNESCO lokuvikelwa.",
         "ask": "Buza umbuzo wamagugu", "send": "Buza i-ROBO GUIDE", "clear": "Sula ingxoxo",
-        "quick": "Imibuzo esheshayo", "footer": "Zimbabwe Heritage Explorer • WRO 2026",
+        "quick": "Imibuzo esheshayo", "footer": "Zimbabwe Heritage Explorer  |  WRO 2026",
     },
     "Shona": {
         "language": "Mutauro", "explore": "Ongorora ROBO GUIDE", "home": "Musha",
@@ -362,7 +362,7 @@ UI = {
         "assistant_title": "ROBO GUIDE Mubatsiri weNhaka",
         "assistant_intro": "Bvunza nezvemakore, vakavaka, rock art, architecture, trade, UNESCO nekuchengetedza.",
         "ask": "Bvunza mubvunzo wenhaka", "send": "Bvunza ROBO GUIDE", "clear": "Bvisa hurukuro",
-        "quick": "Mibvunzo inokurumidza", "footer": "Zimbabwe Heritage Explorer • WRO 2026",
+        "quick": "Mibvunzo inokurumidza", "footer": "Zimbabwe Heritage Explorer  |  WRO 2026",
     },
 }
 
@@ -430,7 +430,7 @@ SITES = {
             "features": ["The Hill Ruins, occupied continuously from the 11th to the 15th centuries.", "The Great Enclosure, largely dating to the 14th century.", "The high Conical Tower inside the Great Enclosure.", "Valley Ruins with domestic structures and dry-stone masonry.", "Steatite (soapstone) bird sculptures associated with ritual and national symbolism."],
             "unesco": "Great Zimbabwe National Monument was inscribed on the UNESCO World Heritage List in 1986 under criteria (i), (iii) and (vi). UNESCO describes it as a unique testimony to Shona civilisation between the 11th and 15th centuries.",
             "protect": ["Do not climb, sit or stand on ancient stone walls.", "Do not move or remove stones and archaeological material.", "Follow authorised visitor paths and site instructions.", "Avoid graffiti, littering and actions that could destabilise masonry."],
-            "facts": ["UNESCO dates the principal construction of the property to about 1100–1450 AD.", "The Great Enclosure dates mainly to the 14th century.", "The city was an important centre of trade and is renowned for exceptional dry-stone craftsmanship."],
+            "facts": ["UNESCO dates the principal construction of the property to about 1100-1450 AD.", "The Great Enclosure dates mainly to the 14th century.", "The city was an important centre of trade and is renowned for exceptional dry-stone craftsmanship."],
             "significance": "Great Zimbabwe is one of Africa's most important archaeological monuments and a powerful demonstration of indigenous African urbanism, engineering, political organisation and trade.",
         },
         "isiNdebele": {
@@ -460,12 +460,12 @@ SITES = {
         "English": {
             "name": "Khami Ruins", "subtitle": "Terraced dry-stone architecture of the Torwa capital",
             "location": "About 22 km west of Bulawayo, Zimbabwe", "inscribed": "1986", "criteria": "(iii), (iv)",
-            "history": "Khami was the capital of the Torwa dynasty and developed as a major centre after the decline of Great Zimbabwe. UNESCO places the Torwa capital within roughly 1450–1650. The main stone-built settlement is therefore approximately 400–600 years old rather than having one exact construction year.",
+            "history": "Khami was the capital of the Torwa dynasty and developed as a major centre after the decline of Great Zimbabwe. UNESCO places the Torwa capital within roughly 1450-1650. The main stone-built settlement is therefore approximately 400-600 years old rather than having one exact construction year.",
             "culture": "Khami reflects political authority, social organisation, local craftsmanship, spiritual meaning and long-distance trade. It continued the broader Zimbabwe stone-building tradition while developing distinctive architectural features of its own.",
             "features": ["Complex platforms and stone-faced terraces.", "Retaining or revetment walls used extensively in the architecture.", "Elaborate chevron and chequered wall decoration.", "The Hill Ruin associated with the chief's residence.", "Imported objects showing trade connections with Europe, China and the wider world."],
             "unesco": "Khami Ruins National Monument was inscribed on the UNESCO World Heritage List in 1986 under criteria (iii) and (iv). UNESCO highlights its distinctive later development of the Zimbabwe stone-building tradition, decorated walls and evidence of long-distance trade.",
             "protect": ["Do not climb or lean on the ancient terrace and retaining walls.", "Never remove pottery, stone or archaeological objects.", "Stay on visitor routes and avoid disturbing archaeological deposits.", "Report damage to site staff instead of moving or repairing objects yourself."],
-            "facts": ["Khami lies about 22 km west of Bulawayo.", "UNESCO identifies it as the capital of the Torwa dynasty, broadly dating 1450–1650.", "Objects from Europe and China demonstrate Khami's role in long-distance trade."],
+            "facts": ["Khami lies about 22 km west of Bulawayo.", "UNESCO identifies it as the capital of the Torwa dynasty, broadly dating 1450-1650.", "Objects from Europe and China demonstrate Khami's role in long-distance trade."],
             "significance": "Khami is important because it shows how Zimbabwe's monumental stone-building tradition evolved after Great Zimbabwe, with distinctive terraces, retaining walls and elaborate decoration.",
         },
         "isiNdebele": {
@@ -497,11 +497,11 @@ QUIZ = {
     "English": [
         ("Which site has one of the highest concentrations of rock art in southern Africa?", ["Great Zimbabwe", "Matobo Hills", "Khami Ruins", "Mana Pools"], 1, "Matobo Hills is renowned for one of southern Africa's highest concentrations of rock art."),
         ("According to UNESCO, Matobo rock art dates back at least about how long?", ["500 years", "2,000 years", "13,000 years", "100 years"], 2, "UNESCO states that Matobo's rock-art tradition dates back at least 13,000 years."),
-        ("When was Great Zimbabwe principally built?", ["1100–1450 AD", "1700–1850 AD", "1900–1950 AD", "500–700 AD"], 0, "UNESCO dates the principal construction of Great Zimbabwe to about 1100–1450 AD."),
+        ("When was Great Zimbabwe principally built?", ["1100-1450 AD", "1700-1850 AD", "1900-1950 AD", "500-700 AD"], 0, "UNESCO dates the principal construction of Great Zimbabwe to about 1100-1450 AD."),
         ("Which part of Great Zimbabwe dates mainly to the 14th century?", ["Great Enclosure", "Khami Hill Ruin", "Matobo caves", "Victoria Falls bridge"], 0, "The Great Enclosure dates mainly to the 14th century."),
         ("What material were the famous Zimbabwe Birds carved from?", ["Steel", "Steatite/soapstone", "Glass", "Ivory"], 1, "The famous bird sculptures are carved from steatite, commonly called soapstone."),
         ("Khami was the capital of which dynasty?", ["Torwa", "Roman", "Ottoman", "Mughal"], 0, "Khami was the capital of the Torwa dynasty."),
-        ("What broad period does UNESCO associate with the Torwa capital at Khami?", ["1450–1650", "1850–1950", "900–1000", "2000–2020"], 0, "UNESCO describes Khami as the Torwa capital within roughly 1450–1650."),
+        ("What broad period does UNESCO associate with the Torwa capital at Khami?", ["1450-1650", "1850-1950", "900-1000", "2000-2020"], 0, "UNESCO describes Khami as the Torwa capital within roughly 1450-1650."),
         ("Which feature is especially characteristic of Khami?", ["Stone-faced terraces and retaining walls", "Glass towers", "Steel bridges", "Mud pyramids"], 0, "Khami is especially noted for platforms, terraces, retaining walls and decorative dry-stone masonry."),
         ("What should a visitor do near Matobo rock paintings?", ["Touch them", "Wet them", "Leave them untouched", "Trace them"], 2, "Rock paintings should not be touched, wetted, traced or rubbed."),
         ("Which two sites provide strong evidence of long-distance trade?", ["Great Zimbabwe and Khami", "Matobo and Mana Pools", "Only Matobo", "None"], 0, "Both Great Zimbabwe and Khami provide archaeological evidence of long-distance trade."),
@@ -509,11 +509,11 @@ QUIZ = {
     "isiNdebele": [
         ("Yiphi indawo elemidwebo yamadwala eminengi kakhulu eningizimu ye-Afrika?", ["Great Zimbabwe", "Matobo Hills", "Khami Ruins", "Mana Pools"], 1, "IMatobo Hills idume kakhulu ngemidwebo yamadwala."),
         ("Imidwebo yaseMatobo ihlehlela emuva okungenani iminyaka emingaki?", ["500", "2,000", "13,000", "100"], 2, "I-UNESCO ithi imidwebo ihlehlela emuva okungenani iminyaka engu-13,000."),
-        ("IGreat Zimbabwe yakhiwa ikakhulu ngasiphi isikhathi?", ["1100–1450 AD", "1700–1850 AD", "1900–1950 AD", "500–700 AD"], 0, "Ukwakhiwa okuyinhloko kwenzeka phakathi kuka-1100 lo-1450 AD."),
+        ("IGreat Zimbabwe yakhiwa ikakhulu ngasiphi isikhathi?", ["1100-1450 AD", "1700-1850 AD", "1900-1950 AD", "500-700 AD"], 0, "Ukwakhiwa okuyinhloko kwenzeka phakathi kuka-1100 lo-1450 AD."),
         ("Yiphi ingxenye yeGreat Zimbabwe eyakhiwa ikakhulu ngekhulu le-14?", ["Great Enclosure", "Khami Hill Ruin", "Matobo caves", "Victoria Falls bridge"], 0, "IGreat Enclosure ingeyekhulu le-14 ikakhulu."),
         ("IZimbabwe Birds zabazwa ngeliphi ilitshe?", ["Steel", "Steatite/soapstone", "Glass", "Ivory"], 1, "Zabazwa nge-steatite, ebizwa njalo nge-soapstone."),
         ("IKhami yayiyinhloko-dolobha yobukhosi bani?", ["Torwa", "Roman", "Ottoman", "Mughal"], 0, "IKhami yayiyinhloko-dolobha yeTorwa."),
-        ("Isikhathi esikhulu seTorwa eKhami sasiphakathi kwamiphi iminyaka?", ["1450–1650", "1850–1950", "900–1000", "2000–2020"], 0, "I-UNESCO ibeka isikhathi esikhulu cishe phakathi kuka-1450 lo-1650."),
+        ("Isikhathi esikhulu seTorwa eKhami sasiphakathi kwamiphi iminyaka?", ["1450-1650", "1850-1950", "900-1000", "2000-2020"], 0, "I-UNESCO ibeka isikhathi esikhulu cishe phakathi kuka-1450 lo-1650."),
         ("Yini ephawuleka kakhulu eKhami?", ["Amathala lamadwala lemiduli yokubamba", "Glass towers", "Steel bridges", "Mud pyramids"], 0, "IKhami idume ngamathala, retaining walls lemihlobiso yamatshe."),
         ("Kumele wenzeni eduze kwemidwebo yaseMatobo?", ["Uyithinte", "Uyimanzise", "Uyitshiye ungayithinti", "Uyilandele ngomdwebo"], 2, "Imidwebo kumele ingathintwa kumbe imanziswe."),
         ("Yiziphi indawo ezimbili ezilobufakazi bokuhweba kwamabanga amade?", ["Great Zimbabwe leKhami", "Matobo leMana Pools", "Matobo kuphela", "Azikho"], 0, "IGreat Zimbabwe leKhami zilobufakazi bokuthengiselana kwamabanga amade."),
@@ -521,11 +521,11 @@ QUIZ = {
     "Shona": [
         ("Ndeipi nzvimbo ine rock art yakawanda zvikuru kumaodzanyemba kweAfrica?", ["Great Zimbabwe", "Matobo Hills", "Khami Ruins", "Mana Pools"], 1, "Matobo Hills inozivikanwa zvikuru nerock art."),
         ("Rock art yeMatobo inodzokera kumashure kwemakore angangoita mangani kana kupfuura?", ["500", "2,000", "13,000", "100"], 2, "UNESCO inoti rock art ine makore angangoita 13,000 kana kupfuura."),
-        ("Great Zimbabwe yakavakwa zvikuru panguva ipi?", ["1100–1450 AD", "1700–1850 AD", "1900–1950 AD", "500–700 AD"], 0, "UNESCO inoisa principal construction pakati pa1100 na1450 AD."),
+        ("Great Zimbabwe yakavakwa zvikuru panguva ipi?", ["1100-1450 AD", "1700-1850 AD", "1900-1950 AD", "500-700 AD"], 0, "UNESCO inoisa principal construction pakati pa1100 na1450 AD."),
         ("Ndeipi part yeGreat Zimbabwe inonyanya kubva muzana remakore rechi14?", ["Great Enclosure", "Khami Hill Ruin", "Matobo caves", "Victoria Falls bridge"], 0, "Great Enclosure inonyanya kubva muzana remakore rechi14."),
         ("Zimbabwe Birds dzakavezwa nechii?", ["Steel", "Steatite/soapstone", "Glass", "Ivory"], 1, "Dzaka vezwa nesteatite, inowanzonzi soapstone."),
         ("Khami yaiva capital yedzinza ripi?", ["Torwa", "Roman", "Ottoman", "Mughal"], 0, "Khami yaiva capital yeTorwa dynasty."),
-        ("UNESCO inoisa nguva huru yeTorwa capital paKhami papi?", ["1450–1650", "1850–1950", "900–1000", "2000–2020"], 0, "Nguva huru iri pakati pa1450 na1650."),
+        ("UNESCO inoisa nguva huru yeTorwa capital paKhami papi?", ["1450-1650", "1850-1950", "900-1000", "2000-2020"], 0, "Nguva huru iri pakati pa1450 na1650."),
         ("Chii chinonyanya kuzivikanwa paKhami?", ["Stone-faced terraces neretaining walls", "Glass towers", "Steel bridges", "Mud pyramids"], 0, "Khami inozivikanwa nema terraces, retaining walls uye decorative dry-stone masonry."),
         ("Mushanyi anofanira kuita sei pedyo nerock art yeMatobo?", ["Kuibata", "Kuinyorovesa", "Kusiya isina kubatwa", "Ku trace"], 2, "Rock art haifaniri kubatwa kana kunyudzwa."),
         ("Ndedzipi nzvimbo mbiri dzine humbowo hwelong-distance trade?", ["Great Zimbabwe neKhami", "Matobo neMana Pools", "Matobo chete", "Hapana"], 0, "Great Zimbabwe neKhami zvose zvine humbowo hwekutengeserana kwemadaro marefu."),
@@ -541,13 +541,13 @@ def assistant_answer(question: str, lang: str) -> str:
     q = normalize(question)
     R = {
         "English": {
-            "great_age": "Great Zimbabwe was not built in a single year. UNESCO dates the principal construction of the property to about 1100–1450 AD. The settlement was founded in the 11th century, and the Great Enclosure dates mainly to the 14th century.",
-            "great_who": "Great Zimbabwe was built by Shona people—the ancestors of Shona-speaking communities. UNESCO describes the site as a unique testimony to Shona civilisation between the 11th and 15th centuries.",
+            "great_age": "Great Zimbabwe was not built in a single year. UNESCO dates the principal construction of the property to about 1100-1450 AD. The settlement was founded in the 11th century, and the Great Enclosure dates mainly to the 14th century.",
+            "great_who": "Great Zimbabwe was built by Shona people-the ancestors of Shona-speaking communities. UNESCO describes the site as a unique testimony to Shona civilisation between the 11th and 15th centuries.",
             "great_features": "Great Zimbabwe has three principal groups: the Hill Ruins, the Great Enclosure and the Valley Ruins. The Great Enclosure contains a narrow passage and the famous Conical Tower. Much of the monumental masonry was built with carefully fitted stone without mortar.",
             "great_trade": "Great Zimbabwe was an important trading centre. Archaeological evidence shows links between the interior of southern Africa and wider Indian Ocean trade networks.",
             "birds": "The Zimbabwe Birds are carved steatite, or soapstone, bird sculptures found at Great Zimbabwe. They are among the site's most famous artefacts and later became major national symbols of Zimbabwe.",
-            "khami_age": "Khami does not have one exact construction year. UNESCO identifies it as the capital of the Torwa dynasty, broadly associated with about 1450–1650. So the main stone-built ruins are roughly 400–600 years old today.",
-            "khami_history": "Khami rose as a major centre after the decline of Great Zimbabwe and served as the capital of the Torwa dynasty. UNESCO associates the Torwa capital with roughly 1450–1650.",
+            "khami_age": "Khami does not have one exact construction year. UNESCO identifies it as the capital of the Torwa dynasty, broadly associated with about 1450-1650. So the main stone-built ruins are roughly 400-600 years old today.",
+            "khami_history": "Khami rose as a major centre after the decline of Great Zimbabwe and served as the capital of the Torwa dynasty. UNESCO associates the Torwa capital with roughly 1450-1650.",
             "khami_features": "Khami is especially known for stone-faced platforms and terraces, retaining or revetment walls, narrow passageways and elaborate chevron and chequered decoration.",
             "khami_trade": "Khami was an important long-distance trade centre. UNESCO records imported material including objects from Europe and China, showing links to the wider world.",
             "matobo_age": "Matobo has a very deep human history. UNESCO reports archaeological occupation extending for at least 500,000 years, while its rock art dates back at least 13,000 years.",
@@ -580,7 +580,7 @@ def assistant_answer(question: str, lang: str) -> str:
             "great_features": "Great Zimbabwe ine Hill Ruins, Great Enclosure neValley Ruins. Great Enclosure ine Conical Tower, uye monumental walls mazhinji akavakwa nematombo akanyatsorongedzwa pasina mortar.",
             "great_trade": "Great Zimbabwe yaiva nzvimbo yakakosha yekutengeserana uye yaibatanidzwa nemisika yeIndian Ocean.",
             "birds": "Zimbabwe Birds zvivezwa zveshiri zvakagadzirwa nesteatite/soapstone zvakawanikwa paGreat Zimbabwe. Zvakazova zviratidzo zvikuru zvenyika.",
-            "khami_age": "Khami haina gore rimwe chete rekuvakwa. UNESCO inoiona secapital yeTorwa inonyanya kubatanidzwa nenguva ya1450–1650. Saka main stone-built ruins ane makore anenge 400 kusvika 600.",
+            "khami_age": "Khami haina gore rimwe chete rekuvakwa. UNESCO inoiona secapital yeTorwa inonyanya kubatanidzwa nenguva ya1450-1650. Saka main stone-built ruins ane makore anenge 400 kusvika 600.",
             "khami_history": "Khami yakakura mushure mekuderera kweGreat Zimbabwe uye yakava capital yeTorwa dynasty.",
             "khami_features": "Khami inozivikanwa nemaplatform, stone-faced terraces, retaining walls, passageways uye chevron nechequered decoration.",
             "khami_trade": "Khami yaiva nzvimbo yakakosha yelong-distance trade. Zvinhu kubva kuEurope neChina zvakawanikwa ipapo.",
@@ -629,10 +629,10 @@ def assistant_answer(question: str, lang: str) -> str:
         return R["unesco"]
 
     if lang == "isiNdebele":
-        return "Buza ngeMatobo Hills, Great Zimbabwe kumbe Khami Ruins — iminyaka, abakhi, imidwebo yamadwala, izakhiwo, ukuhweba, UNESCO kumbe ukuvikela amagugu."
+        return "Buza ngeMatobo Hills, Great Zimbabwe kumbe Khami Ruins - iminyaka, abakhi, imidwebo yamadwala, izakhiwo, ukuhweba, UNESCO kumbe ukuvikela amagugu."
     if lang == "Shona":
-        return "Bvunza nezveMatobo Hills, Great Zimbabwe kana Khami Ruins — makore, vakavaka, rock art, architecture, trade, UNESCO kana kuchengetedza."
-    return "Ask me about Matobo Hills, Great Zimbabwe or Khami Ruins — dates, builders, rock art, architecture, trade, UNESCO, conservation or comparisons."
+        return "Bvunza nezveMatobo Hills, Great Zimbabwe kana Khami Ruins - makore, vakavaka, rock art, architecture, trade, UNESCO kana kuchengetedza."
+    return "Ask me about Matobo Hills, Great Zimbabwe or Khami Ruins - dates, builders, rock art, architecture, trade, UNESCO, conservation or comparisons."
 
 
 with st.sidebar:
@@ -700,7 +700,7 @@ def render_home():
             if st.button(f"{T('open_site')} {d['name']}", key=f"home_open_{site_key}", use_container_width=True):
                 go(site_key)
 
-    st.markdown("## Discover • Understand • Respect • Protect")
+    st.markdown("## Discover | Understand | Respect | Protect")
     a, b, c = st.columns(3)
     with a:
         html('<div class="info-card"><h3>Discover</h3><p>Meet the people, stories and places behind Zimbabwe\'s remarkable cultural heritage.</p></div>')
@@ -788,10 +788,10 @@ def render_quiz():
         c2.metric(T("points"), st.session_state.quiz_points)
         c3.metric(T("achievement"), achievement)
         if pct >= 80:
-            st.success(f"{achievement} — {pct}%")
+            st.success(f"{achievement} - {pct}%")
             st.balloons()
         else:
-            st.info(f"{achievement} — {pct}%")
+            st.info(f"{achievement} - {pct}%")
         if st.button(T("restart"), key="quiz_restart", use_container_width=True):
             reset_quiz()
             st.rerun()
