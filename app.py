@@ -1,197 +1,296 @@
 import re
-import streamlit as st
+import textwrap
 from html import escape
+import streamlit as st
 
 st.set_page_config(
     page_title="ROBO GUIDE | Zimbabwe Heritage Explorer",
-    page_icon="🗿",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# -----------------------------
-# Heritage visual theme
-# -----------------------------
+
+
+def html(content: str) -> None:
+    st.markdown(textwrap.dedent(content).strip(), unsafe_allow_html=True)
+
+
 st.markdown(
     """
     <style>
-    :root {
-        --sand: #F3EBDD;
-        --sand-2: #E7DAC6;
-        --stone: #5D5146;
-        --stone-dark: #302A25;
-        --clay: #A65F3D;
-        --gold: #B58A3A;
-        --cream: #FFFDF8;
-        --olive: #6C7350;
-        --ink: #2B2723;
+    :root{
+        --earth:#5A4436;
+        --earth2:#6D5544;
+        --clay:#9A624A;
+        --terracotta:#B77755;
+        --ochre:#C79A4B;
+        --sand:#E5D4BC;
+        --sand2:#D4BEA0;
+        --cream:#F4E9DA;
+        --olive:#6C7052;
+        --ink:#2E2722;
+        --muted:#564A40;
+        --line:#9A8269;
     }
 
-    .stApp {
-        background: linear-gradient(180deg, #F7F1E8 0%, #EFE4D4 100%);
-        color: var(--ink);
-    }
-
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #40372F 0%, #2E2925 100%);
-        border-right: 1px solid rgba(255,255,255,0.08);
-    }
-
-    [data-testid="stSidebar"] * {
-        color: #FFF8EE;
-    }
-
-    [data-testid="stSidebar"] .stSelectbox label,
-    [data-testid="stSidebar"] .stMarkdown p {
-        color: #FFF8EE !important;
-    }
-
-    [data-testid="stSidebar"] .stButton > button {
-        width: 100%;
-        border-radius: 12px;
-        border: 1px solid rgba(255,255,255,0.15);
-        background: rgba(255,255,255,0.07);
-        color: white;
-        padding: 0.65rem 0.8rem;
-        text-align: left;
-        transition: 0.15s ease;
-    }
-
-    [data-testid="stSidebar"] .stButton > button:hover {
-        border-color: #CBA85D;
-        background: rgba(203,168,93,0.14);
-    }
-
-    .hero {
+    .stApp{
         background:
-          radial-gradient(circle at top right, rgba(181,138,58,0.18), transparent 34%),
-          linear-gradient(135deg, #5A493B 0%, #342D27 100%);
-        color: #FFF8EE;
-        padding: 2.2rem 2rem;
-        border-radius: 22px;
-        box-shadow: 0 16px 34px rgba(48,42,37,0.16);
-        margin-bottom: 1.2rem;
-        border: 1px solid rgba(255,255,255,0.08);
+            radial-gradient(circle at 15% 10%, rgba(199,154,75,.12), transparent 24%),
+            linear-gradient(180deg,#E5D4BC 0%,#D8C4A8 100%);
+        color:var(--ink);
     }
 
-    .hero h1 {
-        margin: 0;
-        font-size: clamp(2.2rem, 6vw, 4.7rem);
-        line-height: 0.95;
-        letter-spacing: 0.04em;
-        color: #FFF7E7;
+    .block-container{
+        max-width:1200px;
+        padding-top:1.25rem;
+        padding-bottom:2rem;
     }
 
-    .hero h3 {
-        margin: 0.65rem 0 0.4rem 0;
-        color: #E6C982;
-        font-weight: 600;
+    .heritage-band{
+        height:14px;
+        border-radius:10px;
+        margin:0 0 1rem 0;
+        background:
+            linear-gradient(135deg, transparent 25%, #C79A4B 25%, #C79A4B 50%, transparent 50%) 0 0/28px 14px,
+            linear-gradient(225deg, transparent 25%, #9A624A 25%, #9A624A 50%, transparent 50%) 14px 0/28px 14px,
+            #5A4436;
+        border:1px solid #816956;
     }
 
-    .hero p {
-        margin: 0;
-        max-width: 850px;
-        font-size: 1.03rem;
-        color: #F2E9DB;
+    [data-testid="stSidebar"]{
+        background:linear-gradient(180deg, rgba(109,85,68,.98), rgba(76,59,48,.99));
+        border-right:1px solid #907763;
     }
 
-    .site-card, .info-card, .fact-card, .assistant-card, .quiz-card {
-        background: rgba(255,253,248,0.96);
-        border: 1px solid #D8C8B0;
-        border-radius: 18px;
-        padding: 1.15rem 1.2rem;
-        box-shadow: 0 8px 22px rgba(62,49,37,0.07);
-        height: 100%;
+    [data-testid="stSidebar"] *{
+        color:#F7ECDD !important;
     }
 
-    .site-card h3, .info-card h3, .fact-card h4 {
-        color: #5B4536;
-        margin-top: 0;
+    [data-testid="stSidebar"] .stButton > button{
+        width:100%;
+        min-height:2.9rem;
+        background:#7A6250;
+        color:#FFF4E7 !important;
+        border:1px solid #9B816C;
+        border-radius:13px;
+        font-weight:750;
     }
 
-    .badge {
-        display: inline-block;
-        background: #E7DAC6;
-        color: #5D5146;
-        border: 1px solid #D3C0A3;
-        padding: 0.26rem 0.58rem;
-        border-radius: 999px;
-        font-size: 0.78rem;
-        font-weight: 700;
-        margin-right: 0.3rem;
-        margin-bottom: 0.25rem;
+    [data-testid="stSidebar"] .stButton > button:hover{
+        background:#8B6E58;
+        border-color:#C79A4B;
     }
 
-    .gold-strip {
-        background: #E5D1A5;
-        border-left: 6px solid #B58A3A;
-        color: #453A30;
-        padding: 1rem 1.1rem;
-        border-radius: 12px;
-        margin: 0.8rem 0 1rem 0;
+    [data-testid="stSidebar"] [data-baseweb="select"] > div{
+        background:#F0E2D0 !important;
+        border:1px solid #A58B72 !important;
     }
 
-    .section-title {
-        color: #5A4638;
-        font-weight: 800;
-        margin-top: 0.7rem;
-        margin-bottom: 0.65rem;
+    [data-testid="stSidebar"] [data-baseweb="select"] *{
+        color:#332B26 !important;
     }
 
-    .tiny {
-        font-size: 0.84rem;
-        color: #776B60;
+    .brand-box{padding:.4rem .2rem .75rem .2rem;}
+    .brand-box h2{margin:0;color:#FFF1DC !important;letter-spacing:.04em;}
+    .brand-box .slogan{color:#E2BE76 !important;font-size:.86rem;font-weight:700;margin-top:.25rem;}
+
+    .hero{
+        position:relative;
+        overflow:hidden;
+        background:linear-gradient(135deg, rgba(90,68,54,.98), rgba(116,82,63,.96));
+        color:#FAEEDF;
+        padding:2.35rem 2.2rem 2.1rem;
+        border-radius:24px;
+        border:1px solid #8E725E;
+        box-shadow:0 14px 30px rgba(63,47,37,.16);
+        margin-bottom:1.25rem;
     }
 
-    .points {
-        font-size: 1.45rem;
-        font-weight: 800;
-        color: #8A6425;
+    .hero:after{
+        content:"";
+        position:absolute;
+        right:-20px;
+        bottom:-25px;
+        width:220px;
+        height:110px;
+        opacity:.28;
+        background:repeating-linear-gradient(45deg,transparent 0 12px,#D3A451 12px 20px,transparent 20px 32px);
+        transform:rotate(-5deg);
     }
 
-    .chat-user {
-        background: #EEE2D0;
-        border-radius: 14px;
-        padding: 0.85rem 1rem;
-        margin: 0.45rem 0;
-        border-left: 4px solid #A65F3D;
+    .hero h1{
+        position:relative;
+        z-index:2;
+        margin:0;
+        color:#FFF3E1 !important;
+        font-size:clamp(2.4rem,5vw,4.8rem);
+        letter-spacing:.045em;
+        line-height:1;
     }
 
-    .chat-bot {
-        background: #FFFDF8;
-        border-radius: 14px;
-        padding: 0.85rem 1rem;
-        margin: 0.45rem 0 0.9rem 0;
-        border-left: 4px solid #B58A3A;
-        box-shadow: 0 4px 12px rgba(62,49,37,0.05);
+    .hero h3{
+        position:relative;
+        z-index:2;
+        color:#E7C780 !important;
+        margin:.65rem 0 .4rem;
+        font-weight:800;
     }
 
-    .footer {
-        margin-top: 2.4rem;
-        padding: 1.1rem;
-        text-align: center;
-        border-top: 1px solid #D3C0A3;
-        color: #6F6257;
-        font-size: 0.88rem;
+    .hero p{
+        position:relative;
+        z-index:2;
+        color:#F6EBDD !important;
+        margin:0;
+        max-width:850px;
+        font-size:1.06rem;
+        line-height:1.6;
     }
 
-    div.stButton > button {
-        border-radius: 12px;
-        border: 1px solid #BBA68D;
+    .slogan-pill{
+        display:inline-block;
+        position:relative;
+        z-index:2;
+        margin-top:1rem;
+        padding:.42rem .78rem;
+        border-radius:999px;
+        border:1px solid rgba(239,205,132,.55);
+        color:#F2D08C;
+        background:rgba(64,48,38,.3);
+        font-size:.88rem;
+        font-weight:800;
     }
 
-    div.stButton > button:hover {
-        border-color: #A65F3D;
-        color: #6F432F;
+    .site-card,.info-card,.fact-card,.quiz-card,.chat-user,.chat-bot,.stat-card{
+        background:#E0CCB2;
+        color:#2F2823;
+        border:1px solid #A68B70;
+        border-radius:18px;
+        box-shadow:0 6px 16px rgba(74,55,43,.09);
+    }
+
+    .site-card{
+        min-height:255px;
+        padding:1.25rem;
+        border-top:6px solid #9A624A;
+    }
+
+    .site-card h3{color:#3A2E28 !important;margin:.55rem 0 .3rem;font-size:1.35rem;}
+    .site-card p,.info-card p,.fact-card p,.chat-user,.chat-bot{color:#40352E !important;line-height:1.55;}
+    .site-icon{font-size:2.45rem;line-height:1;}
+
+    .badge{
+        display:inline-block;
+        margin:.4rem .28rem 0 0;
+        padding:.32rem .66rem;
+        border-radius:999px;
+        background:#735A49;
+        color:#FFF0DD;
+        border:1px solid #5F4A3C;
+        font-size:.78rem;
+        font-weight:800;
+    }
+
+    .info-card{padding:1.15rem 1.2rem;border-left:5px solid #8C6B4E;}
+    .fact-card{padding:1.05rem 1.1rem;margin-bottom:.7rem;min-height:118px;}
+    .fact-card h4{color:#6B4937 !important;margin:0 0 .35rem;}
+
+    .unesco-card{
+        background:#C9AA73;
+        border:1px solid #98733B;
+        border-left:7px solid #76572D;
+        border-radius:16px;
+        padding:1.1rem 1.2rem;
+        color:#2D261F !important;
+        box-shadow:0 5px 14px rgba(74,55,43,.08);
+    }
+
+    .stat-card{padding:.8rem 1rem;text-align:center;min-height:95px;}
+    .stat-label{color:#615045;font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
+    .stat-value{color:#352B25;font-size:1.18rem;font-weight:850;margin-top:.25rem;}
+
+    .quiz-card{padding:1.2rem;border-top:5px solid #8B6545;margin-bottom:.8rem;}
+    .quiz-card h3{margin:0;color:#342A24 !important;}
+
+    .chat-user{padding:1rem 1.1rem;margin:.6rem 0;background:#D3B39F;border-left:6px solid #955B42;}
+    .chat-bot{padding:1rem 1.1rem;margin:.6rem 0 1rem;background:#D5C09B;border-left:6px solid #A87D32;}
+    .chat-user strong,.chat-bot strong{color:#2F2722 !important;}
+
+    div[data-testid="stTextInput"] label,
+    div[data-testid="stRadio"] label,
+    div[data-testid="stMetric"] label,
+    .stMarkdown,.stMarkdown p,.stMarkdown li,h1,h2,h3,h4,h5,h6{color:#332B25;}
+
+    div[data-testid="stTextInput"] input{
+        background:#F2E4D1 !important;
+        color:#2E2722 !important;
+        border:1px solid #8C755F !important;
+        border-radius:11px !important;
+    }
+
+    div[data-testid="stTextInput"] input::placeholder{color:#65584D !important;opacity:1 !important;}
+
+    div[data-testid="stRadio"]{
+        background:#DDC7AA;
+        border:1px solid #A78D71;
+        border-radius:14px;
+        padding:.45rem .7rem;
+    }
+
+    div.stButton > button,div[data-testid="stFormSubmitButton"] button{
+        background:#765B47;
+        color:#FFF0DE !important;
+        border:1px solid #604A3B;
+        border-radius:12px;
+        font-weight:800;
+        min-height:2.75rem;
+    }
+
+    div.stButton > button:hover,div[data-testid="stFormSubmitButton"] button:hover{
+        background:#896B53;
+        border-color:#A67C3B;
+        color:#FFF7EC !important;
+    }
+
+    [data-testid="stMetric"]{
+        background:#D9C2A4;
+        border:1px solid #A58A6E;
+        border-radius:14px;
+        padding:.72rem .9rem;
+    }
+
+    [data-testid="stMetricValue"]{color:#352B25 !important;}
+    [data-testid="stAlert"]{border-radius:13px;}
+
+    .source-note{
+        background:#D2BEA3;
+        border:1px dashed #9C8268;
+        border-radius:12px;
+        padding:.8rem 1rem;
+        color:#55483E;
+        font-size:.86rem;
+        margin-top:1rem;
+    }
+
+    .footer{
+        margin-top:2.4rem;
+        padding:1.2rem .8rem;
+        border-top:1px solid #9B8168;
+        text-align:center;
+        color:#4E4138;
+        font-size:.9rem;
+    }
+
+    .footer strong{color:#6D4B37;}
+
+    @media(max-width:760px){
+        .hero{padding:1.6rem 1.35rem;}
+        .site-card{min-height:auto;}
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# -----------------------------
-# Session state
-# -----------------------------
 DEFAULTS = {
     "page": "home",
     "lang": "English",
@@ -203,837 +302,81 @@ DEFAULTS = {
     "quiz_finished": False,
     "chat": [],
 }
-
 for key, value in DEFAULTS.items():
     if key not in st.session_state:
         st.session_state[key] = value
 
-# -----------------------------
-# Translations
-# -----------------------------
 UI = {
     "English": {
-        "language": "Language",
-        "explore": "Explore ROBO GUIDE",
-        "home": "Home",
-        "matobo": "Matobo Hills",
-        "great": "Great Zimbabwe",
-        "khami": "Khami Ruins",
-        "quiz": "Heritage Challenge",
-        "assistant": "Heritage Assistant",
+        "language": "Language", "explore": "Explore ROBO GUIDE", "home": "Home",
+        "matobo": "Matobo Hills", "great": "Great Zimbabwe", "khami": "Khami Ruins",
+        "quiz": "Heritage Challenge", "assistant": "Heritage Assistant",
         "hero_sub": "Discover Zimbabwe's Living Heritage",
-        "hero_text": "Explore remarkable places, stories, architecture and traditions through an interactive heritage experience.",
-        "choose": "Choose a heritage site",
-        "open_site": "Explore site",
-        "history": "History",
-        "culture": "Culture & People",
-        "features": "Major Features",
-        "unesco": "UNESCO Information",
-        "protect": "How to Protect the Site",
-        "facts": "Interesting Facts",
-        "significance": "Why It Matters",
-        "location": "Location",
-        "inscribed": "UNESCO Inscribed",
-        "criteria": "Criteria",
-        "quiz_title": "Heritage Challenge",
-        "quiz_intro": "Test what you know about Matobo Hills, Great Zimbabwe and Khami Ruins.",
-        "question": "Question",
-        "submit": "Check answer",
-        "next": "Next question",
-        "restart": "Restart challenge",
-        "correct": "Correct!",
-        "incorrect": "Not quite.",
-        "score": "Score",
-        "points": "Heritage Points",
-        "progress": "Progress",
-        "achievement": "Achievement",
-        "guide": "Heritage Guide",
-        "guardian": "Heritage Guardian",
+        "hero_text": "Explore the stories, architecture, art and living traditions of three remarkable Zimbabwean World Heritage Sites.",
+        "choose": "Choose a heritage site", "open_site": "Explore", "history": "History",
+        "culture": "Culture & People", "features": "Major Features", "unesco": "UNESCO World Heritage",
+        "protect": "Respect & Protection", "facts": "Interesting Facts", "significance": "Why It Matters",
+        "location": "Location", "inscribed": "UNESCO inscription", "criteria": "Criteria",
+        "quiz_title": "Heritage Challenge", "quiz_intro": "Test your knowledge and collect Heritage Points.",
+        "question": "Question", "submit": "Check answer", "next": "Next question", "restart": "Restart challenge",
+        "correct": "Correct!", "incorrect": "Not quite.", "score": "Score", "points": "Heritage Points",
+        "achievement": "Achievement", "guide": "Heritage Guide", "guardian": "Heritage Guardian",
         "assistant_title": "ROBO GUIDE Heritage Assistant",
-        "assistant_intro": "Ask about the history, builders, rock art, architecture, trade, UNESCO status, conservation or differences between the three sites.",
-        "ask": "Ask a heritage question",
-        "send": "Ask ROBO GUIDE",
-        "clear": "Clear conversation",
-        "footer": "ROBO GUIDE • Zimbabwe Heritage Explorer • WRO 2026",
+        "assistant_intro": "Ask detailed questions about dates, builders, rock art, architecture, trade, UNESCO status, conservation and comparisons.",
+        "ask": "Ask a heritage question", "send": "Ask ROBO GUIDE", "clear": "Clear conversation",
+        "quick": "Quick questions", "footer": "Zimbabwe Heritage Explorer • WRO 2026",
     },
-
     "isiNdebele": {
-        "language": "Ulimi",
-        "explore": "Hlola i-ROBO GUIDE",
-        "home": "Ikhaya",
-        "matobo": "Amagquma eMatobo",
-        "great": "Great Zimbabwe",
-        "khami": "Amanxiwa eKhami",
-        "quiz": "Umncintiswano Wamagugu",
-        "assistant": "Umsizi Wamagugu",
+        "language": "Ulimi", "explore": "Hlola i-ROBO GUIDE", "home": "Ikhaya",
+        "matobo": "Amagquma eMatobo", "great": "Great Zimbabwe", "khami": "Amanxiwa eKhami",
+        "quiz": "Umncintiswano Wamagugu", "assistant": "Umsizi Wamagugu",
         "hero_sub": "Thola Amagugu Aphilayo eZimbabwe",
-        "hero_text": "Hlola izindawo ezimangalisayo, izindaba, ubuciko bokwakha lamasiko ngendlela yokufunda ephendulanayo.",
-        "choose": "Khetha indawo yamagugu",
-        "open_site": "Hlola indawo",
-        "history": "Umlando",
-        "culture": "Amasiko Labantu",
-        "features": "Izinto Ezisemqoka",
-        "unesco": "Ulwazi lwe-UNESCO",
-        "protect": "Indlela Yokuvikela Indawo",
-        "facts": "Amaqiniso Athakazelisayo",
-        "significance": "Kungani Ibalulekile",
-        "location": "Indawo",
-        "inscribed": "Yangeniswa ku-UNESCO",
-        "criteria": "Imigomo",
-        "quiz_title": "Umncintiswano Wamagugu",
-        "quiz_intro": "Hlola ulwazi lwakho ngeMatobo Hills, Great Zimbabwe leKhami Ruins.",
-        "question": "Umbuzo",
-        "submit": "Hlola impendulo",
-        "next": "Umbuzo olandelayo",
-        "restart": "Qalisa kutsha",
-        "correct": "Kulungile!",
-        "incorrect": "Akukabi yikho.",
-        "score": "Amaphuzu",
-        "points": "Heritage Points",
-        "progress": "Inqubekela phambili",
-        "achievement": "Impumelelo",
-        "guide": "Heritage Guide",
-        "guardian": "Heritage Guardian",
+        "hero_text": "Hlola izindaba, izakhiwo, ubuciko lamasiko aphilayo ezindawo ezintathu zamagugu eZimbabwe.",
+        "choose": "Khetha indawo yamagugu", "open_site": "Hlola", "history": "Umlando",
+        "culture": "Amasiko Labantu", "features": "Izinto Ezisemqoka", "unesco": "Amagugu Omhlaba e-UNESCO",
+        "protect": "Inhlonipho Lokuvikela", "facts": "Amaqiniso Athakazelisayo", "significance": "Kungani Ibalulekile",
+        "location": "Indawo", "inscribed": "Ukufakwa ku-UNESCO", "criteria": "Imigomo",
+        "quiz_title": "Umncintiswano Wamagugu", "quiz_intro": "Hlola ulwazi lwakho uzuze ama-Heritage Points.",
+        "question": "Umbuzo", "submit": "Hlola impendulo", "next": "Umbuzo olandelayo", "restart": "Qalisa kutsha",
+        "correct": "Kulungile!", "incorrect": "Akukabi yikho.", "score": "Amaphuzu", "points": "Heritage Points",
+        "achievement": "Impumelelo", "guide": "Heritage Guide", "guardian": "Heritage Guardian",
         "assistant_title": "ROBO GUIDE Umsizi Wamagugu",
-        "assistant_intro": "Buza ngomlando, abakhi, imidwebo yamadwala, izakhiwo, ezokuthengiselana, i-UNESCO, ukuvikelwa kumbe umehluko wezindawo ezintathu.",
-        "ask": "Buza umbuzo wamagugu",
-        "send": "Buza i-ROBO GUIDE",
-        "clear": "Sula ingxoxo",
-        "footer": "ROBO GUIDE • Zimbabwe Heritage Explorer • WRO 2026",
+        "assistant_intro": "Buza ngeminyaka, abakhi, imidwebo yamadwala, izakhiwo, ukuhweba, UNESCO lokuvikelwa.",
+        "ask": "Buza umbuzo wamagugu", "send": "Buza i-ROBO GUIDE", "clear": "Sula ingxoxo",
+        "quick": "Imibuzo esheshayo", "footer": "Zimbabwe Heritage Explorer • WRO 2026",
     },
-
     "Shona": {
-        "language": "Mutauro",
-        "explore": "Ongorora ROBO GUIDE",
-        "home": "Musha",
-        "matobo": "Matobo Hills",
-        "great": "Great Zimbabwe",
-        "khami": "Khami Ruins",
-        "quiz": "Dambudziko reNhaka",
-        "assistant": "Mubatsiri weNhaka",
+        "language": "Mutauro", "explore": "Ongorora ROBO GUIDE", "home": "Musha",
+        "matobo": "Matobo Hills", "great": "Great Zimbabwe", "khami": "Khami Ruins",
+        "quiz": "Dambudziko reNhaka", "assistant": "Mubatsiri weNhaka",
         "hero_sub": "Ziva Nhaka Mhenyu yeZimbabwe",
-        "hero_text": "Ongorora nzvimbo dzinoshamisa, nyaya, zvivakwa netsika kuburikidza nechiitiko chinodyidzana.",
-        "choose": "Sarudza nzvimbo yenhaka",
-        "open_site": "Ongorora nzvimbo",
-        "history": "Nhoroondo",
-        "culture": "Tsika neVanhu",
-        "features": "Zvinhu Zvikuru",
-        "unesco": "Ruzivo rweUNESCO",
-        "protect": "Kuchengetedza Nzvimbo",
-        "facts": "Zvinonakidza Kuziva",
-        "significance": "Kukosha Kwayo",
-        "location": "Nzvimbo",
-        "inscribed": "Yakanyorwa neUNESCO",
-        "criteria": "Maitiro",
-        "quiz_title": "Dambudziko reNhaka",
-        "quiz_intro": "Edza ruzivo rwako pamusoro peMatobo Hills, Great Zimbabwe neKhami Ruins.",
-        "question": "Mubvunzo",
-        "submit": "Tarisa mhinduro",
-        "next": "Mubvunzo unotevera",
-        "restart": "Tangazve",
-        "correct": "Wagona!",
-        "incorrect": "Hausati warurama.",
-        "score": "Zvawabudirira",
-        "points": "Heritage Points",
-        "progress": "Kufambira mberi",
-        "achievement": "Kubudirira",
-        "guide": "Heritage Guide",
-        "guardian": "Heritage Guardian",
+        "hero_text": "Ongorora nyaya, zvivakwa, art netsika mhenyu dzenzvimbo nhatu dzeWorld Heritage muZimbabwe.",
+        "choose": "Sarudza nzvimbo yenhaka", "open_site": "Ongorora", "history": "Nhoroondo",
+        "culture": "Tsika neVanhu", "features": "Zvinhu Zvikuru", "unesco": "UNESCO World Heritage",
+        "protect": "Kuremekedza & Kuchengetedza", "facts": "Zvinonakidza Kuziva", "significance": "Kukosha Kwayo",
+        "location": "Nzvimbo", "inscribed": "UNESCO inscription", "criteria": "Maitiro",
+        "quiz_title": "Dambudziko reNhaka", "quiz_intro": "Edza ruzivo rwako uye uwane Heritage Points.",
+        "question": "Mubvunzo", "submit": "Tarisa mhinduro", "next": "Mubvunzo unotevera", "restart": "Tangazve",
+        "correct": "Wagona!", "incorrect": "Hausati warurama.", "score": "Zvawabudirira", "points": "Heritage Points",
+        "achievement": "Kubudirira", "guide": "Heritage Guide", "guardian": "Heritage Guardian",
         "assistant_title": "ROBO GUIDE Mubatsiri weNhaka",
-        "assistant_intro": "Bvunza nezvenhoroondo, vakavaka, rock art, zvivakwa, kutengeserana, UNESCO, kuchengetedza kana misiyano yenzvimbo nhatu.",
-        "ask": "Bvunza mubvunzo wenhaka",
-        "send": "Bvunza ROBO GUIDE",
-        "clear": "Bvisa hurukuro",
-        "footer": "ROBO GUIDE • Zimbabwe Heritage Explorer • WRO 2026",
-    },
-}
-
-# -----------------------------
-# Heritage site content
-# -----------------------------
-SITES = {
-    "matobo": {
-        "emoji": "⛰️",
-
-        "English": {
-            "name": "Matobo Hills",
-            "subtitle": "Granite landscapes, sacred traditions and ancient rock art",
-            "location": "Matabeleland South, near Bulawayo",
-            "inscribed": "2003",
-            "criteria": "(iii), (v), (vi)",
-            "history":
-                "Matobo Hills has been occupied and used by communities for thousands of years. "
-                "Its granite landscape contains archaeological evidence from the Stone Age and a "
-                "remarkable concentration of rock paintings. The area also became important in later "
-                "Ndebele history and continues to hold deep cultural and spiritual meaning.",
-            "culture":
-                "The hills are part of a living cultural landscape. Local communities maintain "
-                "spiritual traditions connected with shrines, rain-making and the Mwari belief system. "
-                "Respect for sacred places, community practices and ancestral connections is central "
-                "to understanding Matobo.",
-            "features": [
-                "Granite kopjes and balancing rock formations shaped by erosion.",
-                "Caves and rock shelters containing prehistoric paintings.",
-                "One of southern Africa's richest concentrations of rock art.",
-                "Sacred places associated with long-standing spiritual traditions.",
-                "Archaeological remains showing a very long history of human occupation.",
-            ],
-            "unesco":
-                "UNESCO inscribed Matobo Hills in 2003 as a cultural landscape. Its value comes "
-                "from the long interaction between people and the granite environment, the outstanding "
-                "rock-art record and the continuing importance of spiritual traditions.",
-            "protection": [
-                "Never touch, trace, wet or rub rock paintings.",
-                "Do not write on rocks or remove stones, plants or artefacts.",
-                "Use marked paths and follow the instructions of site staff and local custodians.",
-                "Keep sacred places quiet and respectful.",
-            ],
-            "facts": [
-                "Some rock shelters preserve images of people and animals painted by hunter-gatherer communities.",
-                "The landscape is famous for huge rounded granite boulders and dramatic balancing formations.",
-                "Matobo is both an archaeological landscape and a living spiritual landscape.",
-            ],
-            "significance":
-                "Matobo Hills links natural geology, ancient art, archaeology, spirituality and living "
-                "community traditions in one landscape.",
-        },
-
-        "isiNdebele": {
-            "name": "Amagquma eMatobo",
-            "subtitle": "Amadwala egranite, amasiko angcwele lemidwebo yasendulo",
-            "location": "Matabeleland South, eduze leBulawayo",
-            "inscribed": "2003",
-            "criteria": "(iii), (v), (vi)",
-            "history":
-                "Amagquma eMatobo asetshenziswa ngabantu okwezinkulungwane zeminyaka. "
-                "Kule ndawo kukhona ubufakazi bezikhathi zasendulo kanye lemidwebo eminingi yamadwala. "
-                "Indawo iphinde ibaluleke emlandweni wamaNdebele futhi ilokhu ilenhlonipho enkulu "
-                "kwezamasiko lezomoya.",
-            "culture":
-                "IMatobo yindawo yesiko eliphilayo. Imiphakathi ilondoloza amasiko ahlobene "
-                "lezindawo ezingcwele, ukunxusa izulu kanye lenkolo kaMwari.",
-            "features": [
-                "Amagquma egranite lamadwala abukeka ebhalansile.",
-                "Imihume lezindawo zokukhosela ezilemifanekiso yasendulo.",
-                "Inani elikhulu lemidwebo yamadwala eningizimu ye-Afrika.",
-                "Izindawo ezingcwele ezixhumene lamasiko omoya.",
-                "Ubufakazi bemivubukulo bokuhlala kwabantu isikhathi eside.",
-            ],
-            "unesco":
-                "I-UNESCO yafaka iMatobo Hills ohlwini ngo-2003 njengendawo yesiko. "
-                "Ibaluleke ngenxa yobudlelwano obude phakathi kwabantu lendawo, "
-                "imidwebo yamadwala kanye lamasiko omoya asaqhubekayo.",
-            "protection": [
-                "Ungathinti kumbe ukhuhle imidwebo yamadwala.",
-                "Ungabhali emadwaleni futhi ungasusi amatshe kumbe izinto zakudala.",
-                "Sebenzisa indlela ebekiweyo futhi ulalele iziqondiso zabasebenzi.",
-                "Hlonipha ukuthula kwezindawo ezingcwele.",
-            ],
-            "facts": [
-                "Eminye imihume ilondoloza imidwebo yabantu lezinyamazana yasendulo.",
-                "IMatobo idume ngamatshe amakhulu egranite abhalansile.",
-                "Iyindawo yemivubukulo kanye lendawo yesiko lomoya eliphilayo.",
-            ],
-            "significance":
-                "IMatobo ihlanganisa ubunjalo bomhlaba, ubuciko basendulo, "
-                "imivubukulo, ukholo lamasiko kanye lempilo yemiphakathi.",
-        },
-
-        "Shona": {
-            "name": "Matobo Hills",
-            "subtitle": "Matombo egranite, tsika dzinoyera uye rock art yekare",
-            "location": "Matabeleland South, pedyo neBulawayo",
-            "inscribed": "2003",
-            "criteria": "(iii), (v), (vi)",
-            "history":
-                "Matobo Hills yakashandiswa nevanhu kwezviuru zvemakore. Munzvimbo iyi mune "
-                "humbowo hwekugara kwevanhu vekare uye rock art yakawanda. Yakazove yakakosha "
-                "munhoroondo yeNdebele uye ichiri nzvimbo ine kukosha kukuru kwetsika nemweya.",
-            "culture":
-                "Matobo inzvimbo yetsika mhenyu. Nharaunda dzinoramba dzichichengeta tsika "
-                "dzine chekuita nenzvimbo dzinoyera, kunamatira mvura uye kutenda kwaMwari.",
-            "features": [
-                "Makomo egranite nematombo anoita seakatsiga pamusoro pemamwe.",
-                "Mapako nematumba ane mifananidzo yekare pamadziro.",
-                "Imwe yenzvimbo dzine rock art yakawanda kumaodzanyemba kweAfrica.",
-                "Nzvimbo dzinoyera dzine hukama netsika dzemweya.",
-                "Humbowo hwekuchera matongo hunoratidza kugara kwevanhu kwenguva refu.",
-            ],
-            "unesco":
-                "UNESCO yakanyora Matobo Hills muna 2003 senzvimbo yetsika. "
-                "Kukosha kwayo kunobva pahukama hwenguva refu pakati pevanhu nenzvimbo, "
-                "rock art yakakosha uye tsika dzemweya dzichiri kurarama.",
-            "protection": [
-                "Usabata, kunyudza kana kukwesha rock art.",
-                "Usanyora pamatombo uye usabvisa zvinhu zvekare.",
-                "Famba munzira dzakatemwa uye tevera mirayiridzo yevashandi.",
-                "Remekedza runyararo rwenzvimbo dzinoyera.",
-            ],
-            "facts": [
-                "Mamwe mapako ane mifananidzo yevanhu nemhuka yakapendwa kare kare.",
-                "Matobo inozivikanwa nematombo makuru egranite anoyevedza.",
-                "Inobatanidza archaeology netsika dzemweya dzichiri kushandiswa.",
-            ],
-            "significance":
-                "Matobo Hills inobatanidza geology, art yekare, archaeology, "
-                "tsika nemweya munzvimbo imwe chete.",
-        },
-    },
-
-    "great": {
-        "emoji": "🏛️",
-
-        "English": {
-            "name": "Great Zimbabwe",
-            "subtitle": "A monumental stone city and symbol of Zimbabwe",
-            "location": "Masvingo Province",
-            "inscribed": "1986",
-            "criteria": "(i), (iii), (vi)",
-            "history":
-                "Great Zimbabwe flourished mainly between the 11th and 15th centuries. "
-                "It became a major political, economic and cultural centre built by ancestors "
-                "of Shona-speaking communities. Its wealth was connected to cattle, agriculture, "
-                "gold and long-distance trade linking the interior of southern Africa to Indian Ocean networks.",
-            "culture":
-                "The site reflects sophisticated African state formation, leadership, craftsmanship "
-                "and social organisation. Its legacy remains central to national identity.",
-            "features": [
-                "The Hill Complex, built among natural granite boulders.",
-                "The Great Enclosure, one of the site's best-known monumental structures.",
-                "The Conical Tower inside the Great Enclosure.",
-                "Valley Ruins made from carefully fitted dry-stone walls.",
-                "Soapstone Zimbabwe Birds, important national symbols.",
-            ],
-            "unesco":
-                "Great Zimbabwe National Monument was inscribed by UNESCO in 1986. "
-                "UNESCO recognises its exceptional architecture, its testimony to a major African "
-                "civilisation and its powerful historical and cultural significance.",
-            "protection": [
-                "Do not climb, sit or stand on ancient walls.",
-                "Never remove stones or artefacts from the site.",
-                "Keep to official paths and viewing areas.",
-                "Avoid damage, graffiti and littering.",
-            ],
-            "facts": [
-                "Its walls were built largely without mortar using carefully dressed stone blocks.",
-                "Objects found at the site show contact with long-distance trade networks.",
-                "The famous Zimbabwe Birds were carved from soapstone.",
-            ],
-            "significance":
-                "Great Zimbabwe demonstrates the engineering, economic power and cultural sophistication "
-                "of a major pre-colonial African civilisation.",
-        },
-
-        "isiNdebele": {
-            "name": "Great Zimbabwe",
-            "subtitle": "Idolobho elikhulu lamatshe eliyisibonakaliso seZimbabwe",
-            "location": "Masvingo Province",
-            "inscribed": "1986",
-            "criteria": "(i), (iii), (vi)",
-            "history":
-                "IGreat Zimbabwe yakhula kakhulu phakathi kwekhulu le-11 nele-15. "
-                "Yaba yisikhungo esikhulu sezombusazwe, umnotho lamasiko, yakhiwa ngabokhokho "
-                "bemiphakathi ekhuluma isiShona.",
-            "culture":
-                "Indawo ibonisa ubuhlakani bokubusa, umsebenzi wezandla kanye lenhlangano yabantu base-Afrika.",
-            "features": [
-                "IHill Complex ephakathi kwamadwala egranite.",
-                "IGreat Enclosure.",
-                "IConical Tower phakathi kweGreat Enclosure.",
-                "IValley Ruins ezakhiwe ngamatshe ngaphandle kodaka.",
-                "IZimbabwe Birds ezabazwa ngetshe lesoapstone.",
-            ],
-            "unesco":
-                "IGreat Zimbabwe National Monument yafakwa ku-UNESCO ngo-1986 ngenxa yobuciko bayo "
-                "bezakhiwo kanye lokubaluleka kwayo emlandweni lasemasikweni.",
-            "protection": [
-                "Ungakhweli kumbe uhlale phezu kwemiduli yasendulo.",
-                "Ungasusi amatshe kumbe izinto zemivubukulo.",
-                "Hamba emizileni esemthethweni.",
-                "Gwema ukubhala, ukulimaza kumbe ukulahla ingcekeza.",
-            ],
-            "facts": [
-                "Imiduli eminengi yakhiwa ngaphandle kodaka.",
-                "Izinto ezatholakala lapha zibonisa ukuthengiselana kwamabanga amade.",
-                "IZimbabwe Birds zabazwa ngetshe lesoapstone.",
-            ],
-            "significance":
-                "IGreat Zimbabwe ibonisa ubuciko bokwakha, amandla omnotho kanye lobuhlakani "
-                "bempucuko enkulu yase-Afrika.",
-        },
-
-        "Shona": {
-            "name": "Great Zimbabwe",
-            "subtitle": "Guta guru rematombo uye chiratidzo cheZimbabwe",
-            "location": "Masvingo Province",
-            "inscribed": "1986",
-            "criteria": "(i), (iii), (vi)",
-            "history":
-                "Great Zimbabwe yakabudirira zvikuru kubva muzana remakore rechi11 kusvika rechi15. "
-                "Yakava nzvimbo huru yezvematongerwo enyika, hupfumi netsika, yakavakwa "
-                "nemadzitateguru evanhu vanotaura chiShona.",
-            "culture":
-                "Nzvimbo iyi inoratidza hutongi hwakarongeka, hunyanzvi hwekugadzira uye "
-                "kurongeka kwevanhu vemuAfrica.",
-            "features": [
-                "Hill Complex yakavakwa pakati pematombo egranite.",
-                "Great Enclosure.",
-                "Conical Tower iri mukati meGreat Enclosure.",
-                "Valley Ruins dzine madziro edry-stone.",
-                "Zimbabwe Birds dzakavezwa nesoapstone.",
-            ],
-            "unesco":
-                "Great Zimbabwe National Monument yakanyorwa neUNESCO muna 1986 nekuda kwezvivakwa "
-                "zvayo zvinoshamisa uye kukosha kwayo munhoroondo netsika.",
-            "protection": [
-                "Usakwira kana kugara pamusoro pemadziro ekare.",
-                "Usabvisa matombo kana artefacts.",
-                "Famba munzira dziri pamutemo.",
-                "Dzivisa graffiti, kukuvara uye marara.",
-            ],
-            "facts": [
-                "Madziro mazhinji akavakwa pasina mortar.",
-                "Zvakawanikwa zvinoratidza kutengeserana kwemadaro marefu.",
-                "Zimbabwe Birds dzakavezwa nesoapstone.",
-            ],
-            "significance":
-                "Great Zimbabwe inoratidza hunyanzvi hwekuvaka, simba rehupfumi netsika "
-                "dzebudiriro huru yeAfrica.",
-        },
-    },
-
-    "khami": {
-        "emoji": "🧱",
-
-        "English": {
-            "name": "Khami Ruins",
-            "subtitle": "Terraced stone architecture of the Torwa state",
-            "location": "Near Bulawayo",
-            "inscribed": "1986",
-            "criteria": "(iii), (iv)",
-            "history":
-                "Khami rose to prominence after the decline of Great Zimbabwe. From the 15th century "
-                "into the 17th century it became an important centre of the Torwa state. "
-                "The site continued regional traditions of elite stone building while developing "
-                "its own distinctive terraced style.",
-            "culture":
-                "Khami reflects political authority, social organisation, craftsmanship and exchange "
-                "in south-western Zimbabwe.",
-            "features": [
-                "Massive stone-faced terraces.",
-                "Decorative dry-stone wall patterns.",
-                "Retaining walls adapted to the natural landscape.",
-                "Evidence of local production and long-distance trade.",
-                "A distinctive architectural tradition related to Great Zimbabwe.",
-            ],
-            "unesco":
-                "Khami Ruins National Monument was inscribed by UNESCO in 1986. "
-                "It is recognised for its testimony to an important cultural tradition and "
-                "its distinctive architecture.",
-            "protection": [
-                "Do not climb on terrace walls.",
-                "Do not remove pottery, stone or archaeological material.",
-                "Stay on visitor routes where provided.",
-                "Report damage rather than moving objects yourself.",
-            ],
-            "facts": [
-                "Khami is especially famous for terraced construction.",
-                "Decorative walling patterns give the ruins a distinctive appearance.",
-                "Trade goods found at Khami show connections to wider commercial networks.",
-            ],
-            "significance":
-                "Khami shows how Zimbabwe's stone-building tradition continued and changed "
-                "after Great Zimbabwe.",
-        },
-
-        "isiNdebele": {
-            "name": "Amanxiwa eKhami",
-            "subtitle": "Izakhiwo zamatshe ezitebhisi zombuso weTorwa",
-            "location": "Eduze leBulawayo",
-            "inscribed": "1986",
-            "criteria": "(iii), (iv)",
-            "history":
-                "IKhami yakhula ngemva kokwehla kweGreat Zimbabwe. Kusukela ngekhulu le-15 "
-                "kusiya kwele-17 yaba yisikhungo esibalulekileyo sombuso weTorwa.",
-            "culture":
-                "IKhami ibonisa amandla okubusa, ukuhleleka kwabantu, ubuciko bemisebenzi yezandla "
-                "kanye lokuthengiselana.",
-            "features": [
-                "Amathala amakhulu avalwe ngamatshe.",
-                "Imiduli yamatshe elemihlobiso.",
-                "Imiduli yokubamba umhlabathi.",
-                "Ubufakazi bokuthengiselana kwamabanga amade.",
-                "Isitayela sokwakha esihlobene leGreat Zimbabwe.",
-            ],
-            "unesco":
-                "IKhami Ruins National Monument yafakwa ku-UNESCO ngo-1986 ngenxa yobufakazi "
-                "bamasiko abalulekileyo kanye lesitayela sayo sokwakha.",
-            "protection": [
-                "Ungakhweli phezu kwemiduli yamathala.",
-                "Ungasusi amatshe kumbe izinto zemivubukulo.",
-                "Hamba emizileni yezivakashi.",
-                "Bika umonakalo kubasebenzi.",
-            ],
-            "facts": [
-                "IKhami idume ngamathala ayo akhiwe ngamatshe.",
-                "Imihlobiso yemiduli yenza indawo ibonakale yehlukile.",
-                "Izinto ezatholakala lapha zibonisa ukuthengiselana lezinye izindawo.",
-            ],
-            "significance":
-                "IKhami ikhombisa ukuthi isiko lokwakha ngamatshe eZimbabwe laqhubeka "
-                "futhi latshintsha ngemva kweGreat Zimbabwe.",
-        },
-
-        "Shona": {
-            "name": "Khami Ruins",
-            "subtitle": "Zvivakwa zvematombo zvine terraces zvehurumende yeTorwa",
-            "location": "Pedyo neBulawayo",
-            "inscribed": "1986",
-            "criteria": "(iii), (iv)",
-            "history":
-                "Khami yakasimukira mushure mekuderera kweGreat Zimbabwe. Kubva muzana remakore "
-                "rechi15 kusvika rechi17 yakava nzvimbo yakakosha yehurumende yeTorwa.",
-            "culture":
-                "Khami inoratidza hutongi, kurongeka kwevanhu, hunyanzvi hwekugadzira "
-                "uye kutengeserana.",
-            "features": [
-                "Terraces huru dzine madziro ematombo.",
-                "Dry-stone walling ine mapatani ekushongedza.",
-                "Retaining walls.",
-                "Humbowo hwekutengeserana kwemadaro marefu.",
-                "Nzira yekuvaka ine hukama neGreat Zimbabwe.",
-            ],
-            "unesco":
-                "Khami Ruins National Monument yakanyorwa neUNESCO muna 1986 nekuda kweuchapupu "
-                "hwayo hwetsika yakakosha uye chimiro chayo chakasiyana.",
-            "protection": [
-                "Usakwira pamadziro e terraces.",
-                "Usabvisa pottery, matombo kana artefacts.",
-                "Shandisa nzira dzevashanyi.",
-                "Kana ukaona kukuvara, zviudze vashandi.",
-            ],
-            "facts": [
-                "Khami inozivikanwa zvikuru nema terraces.",
-                "Mapatani pamadziro anoipa chimiro chakasiyana.",
-                "Trade goods dzinoratidza hukama nemisika iri kure.",
-            ],
-            "significance":
-                "Khami inoratidza kuenderera nekushanduka kwetsika yekuvaka nematombo muZimbabwe.",
-        },
-    },
-}
-
-# -----------------------------
-# Quiz
-# -----------------------------
-QUIZ = {
-    "English": [
-        (
-            "Which heritage site is especially famous for prehistoric rock paintings?",
-            ["Great Zimbabwe", "Matobo Hills", "Khami Ruins", "Victoria Falls"],
-            1,
-            "Matobo Hills contains one of southern Africa's richest concentrations of rock art.",
-        ),
-        (
-            "In which year was Matobo Hills inscribed on the UNESCO World Heritage List?",
-            ["1980", "1986", "2003", "2010"],
-            2,
-            "Matobo Hills was inscribed in 2003.",
-        ),
-        (
-            "Which major structure is found at Great Zimbabwe?",
-            ["Great Enclosure", "Stonehenge", "Acropolis", "Pyramids"],
-            0,
-            "The Great Enclosure is one of Great Zimbabwe's best-known structures.",
-        ),
-        (
-            "How were many Great Zimbabwe walls constructed?",
-            ["With concrete", "With steel", "Dry-stone masonry", "With timber"],
-            2,
-            "Many walls were built from carefully fitted stone without mortar.",
-        ),
-        (
-            "The famous Zimbabwe Birds were carved mainly from what?",
-            ["Soapstone", "Gold", "Wood", "Bronze"],
-            0,
-            "The Zimbabwe Birds were carved from soapstone.",
-        ),
-        (
-            "Khami became an important centre of which state?",
-            ["Torwa", "Roman", "Ottoman", "Aztec"],
-            0,
-            "Khami was an important centre of the Torwa state.",
-        ),
-        (
-            "What architectural feature is especially associated with Khami?",
-            ["Glass towers", "Stone-faced terraces", "Wooden palaces", "Brick domes"],
-            1,
-            "Khami is especially known for its extensive stone-faced terraces.",
-        ),
-        (
-            "What is the safest behaviour near ancient rock paintings?",
-            ["Touch them", "Wet them", "Do not touch them", "Trace them"],
-            2,
-            "Touching or wetting ancient paintings can damage them.",
-        ),
-        (
-            "What connected Great Zimbabwe to wider trading networks?",
-            ["Long-distance trade", "Air travel", "Rail transport", "Modern shipping"],
-            0,
-            "Long-distance trade linked Great Zimbabwe to regional and Indian Ocean networks.",
-        ),
-        (
-            "Which statement best compares Great Zimbabwe and Khami?",
-            [
-                "They are exactly the same",
-                "Both use stone-building traditions but Khami is especially known for terraces",
-                "Neither contains stone walls",
-                "Both were built in the 20th century",
-            ],
-            1,
-            "Both belong to Zimbabwe's stone-building tradition, but Khami has a distinctive terraced style.",
-        ),
-    ],
-
-    "isiNdebele": [
-        (
-            "Yiphi indawo eyaziwa kakhulu ngemidwebo yasendulo emadwaleni?",
-            ["Great Zimbabwe", "Matobo Hills", "Khami Ruins", "Victoria Falls"],
-            1,
-            "IMatobo Hills ilenani elikhulu lemidwebo yasendulo emadwaleni.",
-        ),
-        (
-            "IMatobo Hills yafakwa ku-UNESCO ngamuphi umnyaka?",
-            ["1980", "1986", "2003", "2010"],
-            2,
-            "IMatobo Hills yafakwa ku-UNESCO ngo-2003.",
-        ),
-        (
-            "Yisiphi isakhiwo esidumileyo eGreat Zimbabwe?",
-            ["Great Enclosure", "Stonehenge", "Acropolis", "Pyramids"],
-            0,
-            "IGreat Enclosure ngesinye sezakhiwo ezaziwa kakhulu.",
-        ),
-        (
-            "Imiduli eminengi yeGreat Zimbabwe yakhiwa njani?",
-            ["Ngekhonkolo", "Ngensimbi", "Ngamatshe ngaphandle kodaka", "Ngezigodo"],
-            2,
-            "Amatshe ayehlanganiswa ngobuciko kungasetshenziswanga udaka.",
-        ),
-        (
-            "IZimbabwe Birds zabazwa ngani?",
-            ["Soapstone", "Igolide", "Isihlahla", "Bronze"],
-            0,
-            "IZimbabwe Birds zabazwa nge-soapstone.",
-        ),
-        (
-            "IKhami yaba yisikhungo sombuso bani?",
-            ["Torwa", "Roman", "Ottoman", "Aztec"],
-            0,
-            "IKhami yaba yisikhungo esibalulekileyo sombuso weTorwa.",
-        ),
-        (
-            "Yisiphi isakhiwo esidume kakhulu eKhami?",
-            ["Glass towers", "Amathala agqitshwe ngamatshe", "Wooden palaces", "Brick domes"],
-            1,
-            "IKhami idume ngamathala ayo amakhulu akhiwe ngamatshe.",
-        ),
-        (
-            "Kumele wenzeni eduze kwemidwebo yasendulo?",
-            ["Uyithinte", "Uyimanzise", "Ungayithinti", "Uyidwebe"],
-            2,
-            "Ukuthinta imidwebo kungayilimaza.",
-        ),
-        (
-            "Yini eyaxhumanisa iGreat Zimbabwe lezinye izindawo?",
-            ["Ukuthengiselana kwamabanga amade", "Izindiza", "Izitimela", "Ama-container"],
-            0,
-            "Ukuthengiselana kwamabanga amade kwaxhumanisa iGreat Zimbabwe lezinye izimakethe.",
-        ),
-        (
-            "Yiphi inkulumo elungileyo ngeGreat Zimbabwe leKhami?",
-            [
-                "Zifana ngokupheleleyo",
-                "Zombili zisebenzisa isiko lamatshe kodwa iKhami idume ngamathala",
-                "Azila miduli yamatshe",
-                "Zakhiwa ngekhulu lama-20",
-            ],
-            1,
-            "Zombili zihlobene lesiko lokwakha ngamatshe.",
-        ),
-    ],
-
-    "Shona": [
-        (
-            "Ndeipi nzvimbo inonyanya kuzivikanwa nerock art yekare?",
-            ["Great Zimbabwe", "Matobo Hills", "Khami Ruins", "Victoria Falls"],
-            1,
-            "Matobo Hills ine rock art yakawanda.",
-        ),
-        (
-            "Matobo Hills yakanyorwa neUNESCO mugore ripi?",
-            ["1980", "1986", "2003", "2010"],
-            2,
-            "Matobo Hills yakanyorwa muna 2003.",
-        ),
-        (
-            "Ndechipi chimwe chezvivakwa zvikuru paGreat Zimbabwe?",
-            ["Great Enclosure", "Stonehenge", "Acropolis", "Pyramids"],
-            0,
-            "Great Enclosure ndechimwe chezvivakwa zvinonyanya kuzivikanwa.",
-        ),
-        (
-            "Madziro mazhinji eGreat Zimbabwe akavakwa sei?",
-            ["Nekongiri", "Nesimbi", "Dry-stone masonry", "Nemapuranga"],
-            2,
-            "Matombo akaiswa pamwe chete pasina mortar.",
-        ),
-        (
-            "Zimbabwe Birds dzakavezwa nechii?",
-            ["Soapstone", "Goridhe", "Huni", "Bronze"],
-            0,
-            "Zimbabwe Birds dzakavezwa nesoapstone.",
-        ),
-        (
-            "Khami yakava nzvimbo yakakosha yehurumende ipi?",
-            ["Torwa", "Roman", "Ottoman", "Aztec"],
-            0,
-            "Khami yaiva nzvimbo yakakosha yehurumende yeTorwa.",
-        ),
-        (
-            "Chii chinonyanya kuzivikanwa paKhami?",
-            ["Glass towers", "Stone-faced terraces", "Wooden palaces", "Brick domes"],
-            1,
-            "Khami inonyanya kuzivikanwa nema terraces ayo.",
-        ),
-        (
-            "Unofanira kuita sei pedyo nerock art yekare?",
-            ["Kuibata", "Kuinyorovesa", "Kusabata", "Kuitevera nechalk"],
-            2,
-            "Kubata rock art kunogona kuikuvadza.",
-        ),
-        (
-            "Chii chakabatanidza Great Zimbabwe nemisika iri kure?",
-            ["Long-distance trade", "Ndege", "Chitima", "Containers"],
-            0,
-            "Long-distance trade yakabatanidza Great Zimbabwe nemisika iri kure.",
-        ),
-        (
-            "Ndeipi tsananguro yakarurama yeGreat Zimbabwe neKhami?",
-            [
-                "Dzakaenzana chose",
-                "Dzose dzine stone-building tradition asi Khami inozivikanwa nema terraces",
-                "Hadzina madziro ematombo",
-                "Dzose dzakavakwa muzana remakore rechi20",
-            ],
-            1,
-            "Dzose dzine stone-building tradition, asi Khami ine terraced style.",
-        ),
-    ],
-}
-
-# -----------------------------
-# Assistant knowledge
-# -----------------------------
-ASSISTANT_KB = {
-    "English": {
-        "matobo":
-            "Matobo Hills is a UNESCO cultural landscape near Bulawayo, inscribed in 2003. "
-            "It is famous for granite landforms, caves, rock shelters, prehistoric rock art, "
-            "archaeology and living spiritual traditions.",
-        "great":
-            "Great Zimbabwe flourished mainly from the 11th to 15th centuries. It was a major "
-            "political, economic and cultural centre built by ancestors of Shona-speaking communities. "
-            "Important features include the Hill Complex, Great Enclosure, Conical Tower, Valley Ruins "
-            "and Zimbabwe Birds.",
-        "khami":
-            "Khami Ruins rose after the decline of Great Zimbabwe and became an important centre "
-            "of the Torwa state. It is known for stone-faced terraces, retaining walls and decorative "
-            "dry-stone patterns.",
-        "compare":
-            "Great Zimbabwe and Khami are both part of Zimbabwe's stone-building tradition. "
-            "Great Zimbabwe is famous for monumental freestanding walls and the Great Enclosure, "
-            "while Khami is especially known for terraces and decorative retaining walls. "
-            "Matobo is different because its heritage includes rock art, granite landscapes and living sacred traditions.",
-        "unesco":
-            "Great Zimbabwe and Khami Ruins were inscribed on the UNESCO World Heritage List in 1986. "
-            "Matobo Hills was inscribed in 2003.",
-        "trade":
-            "Great Zimbabwe and Khami both show evidence of long-distance exchange. Imported objects "
-            "and ceramics demonstrate connections to wider regional and Indian Ocean trade networks.",
-        "protect":
-            "Good heritage conservation means not touching rock art, not climbing ancient walls, "
-            "not removing artefacts or stones, staying on marked routes and avoiding graffiti or litter.",
-        "birds":
-            "The Zimbabwe Birds are famous soapstone sculptures associated with Great Zimbabwe. "
-            "Their image became an important national symbol.",
-        "torwa":
-            "The Torwa state was an important political power in south-western Zimbabwe. "
-            "Khami became one of its major centres.",
-    },
-
-    "isiNdebele": {
-        "matobo":
-            "IMatobo Hills yindawo yesiko ye-UNESCO eduze leBulawayo. Idume ngamatshe egranite, "
-            "imihume, imidwebo yasendulo kanye lamasiko omoya.",
-        "great":
-            "IGreat Zimbabwe yakhula phakathi kwekhulu le-11 lele-15. Yaba yisikhungo esikhulu "
-            "sezombusazwe, umnotho lamasiko.",
-        "khami":
-            "IKhami Ruins yakhula ngemva kokwehla kweGreat Zimbabwe futhi yaba yisikhungo sombuso weTorwa.",
-        "compare":
-            "IGreat Zimbabwe leKhami zombili zisebenzisa isiko lokwakha ngamatshe, kodwa iKhami "
-            "idume ngamathala. IMatobo yona idume ngemidwebo yamadwala lamasiko angcwele.",
-        "unesco":
-            "IGreat Zimbabwe leKhami Ruins zafakwa ku-UNESCO ngo-1986. IMatobo Hills yafakwa ngo-2003.",
-        "trade":
-            "IGreat Zimbabwe leKhami zombili zibonisa ubufakazi bokuthengiselana kwamabanga amade.",
-        "protect":
-            "Ukuvikela amagugu kutsho ukungathinti imidwebo yamadwala, ukungakhweli imiduli "
-            "yasendulo kanye lokungasusi izinto.",
-        "birds":
-            "IZimbabwe Birds yizithombe ezabazwa nge-soapstone ezihlobene leGreat Zimbabwe.",
-        "torwa":
-            "Umbuso weTorwa wawungamandla abalulekileyo eningizimu-ntshonalanga yeZimbabwe.",
-    },
-
-    "Shona": {
-        "matobo":
-            "Matobo Hills inzvimbo yetsika yeUNESCO pedyo neBulawayo. Inozivikanwa nematombo egranite, "
-            "mapako, rock art yekare uye tsika dzemweya.",
-        "great":
-            "Great Zimbabwe yakabudirira kubva muzana remakore rechi11 kusvika rechi15. "
-            "Yaiva nzvimbo huru yezvematongerwo enyika, hupfumi netsika.",
-        "khami":
-            "Khami Ruins yakasimukira mushure mekuderera kweGreat Zimbabwe uye yakava nzvimbo "
-            "yakakosha yehurumende yeTorwa.",
-        "compare":
-            "Great Zimbabwe neKhami dzose dzine tsika yekuvaka nematombo. Khami inonyanya "
-            "kuzivikanwa nema terraces, uku Matobo ichizivikanwa nerock art netsika dzinoyera.",
-        "unesco":
-            "Great Zimbabwe neKhami Ruins zvakanyorwa neUNESCO muna 1986. Matobo Hills yakanyorwa muna 2003.",
-        "trade":
-            "Great Zimbabwe neKhami zvose zvinoratidza humbowo hwekutengeserana kwemadaro marefu.",
-        "protect":
-            "Kuchengetedza nhaka kunoreva kusabata rock art, kusakwira pamadziro ekare uye kusabvisa artefacts.",
-        "birds":
-            "Zimbabwe Birds zvivezwa zvesoapstone zvakabatana neGreat Zimbabwe.",
-        "torwa":
-            "Hurumende yeTorwa yaiva simba rakakosha kumaodzanyemba-kumadokero kweZimbabwe.",
+        "assistant_intro": "Bvunza nezvemakore, vakavaka, rock art, architecture, trade, UNESCO nekuchengetedza.",
+        "ask": "Bvunza mubvunzo wenhaka", "send": "Bvunza ROBO GUIDE", "clear": "Bvisa hurukuro",
+        "quick": "Mibvunzo inokurumidza", "footer": "Zimbabwe Heritage Explorer • WRO 2026",
     },
 }
 
 
-def T(key):
+def T(key: str) -> str:
     return UI[st.session_state.lang][key]
 
 
-def go(page):
+def go(page: str) -> None:
     st.session_state.page = page
     st.rerun()
 
 
-def reset_quiz():
+def reset_quiz() -> None:
     st.session_state.quiz_index = 0
     st.session_state.quiz_score = 0
     st.session_state.quiz_points = 0
@@ -1042,95 +385,268 @@ def reset_quiz():
     st.session_state.quiz_finished = False
 
 
-def assistant_answer(question, lang):
-    q = re.sub(r"\s+", " ", question.lower().strip())
-    kb = ASSISTANT_KB[lang]
+SITES = {
+    "matobo": {
+        "English": {
+            "name": "Matobo Hills", "subtitle": "Granite landscapes, ancient rock art and living sacred traditions",
+            "location": "Matabeleland South, Zimbabwe", "inscribed": "2003", "criteria": "(iii), (v), (vi)",
+            "history": "Matobo Hills preserves an exceptionally long record of human interaction with the landscape. UNESCO notes archaeological evidence of occupation extending for at least 500,000 years, while the rock-art tradition dates back at least 13,000 years.",
+            "culture": "Matobo is a living cultural and spiritual landscape. Sacred shrines and places in the hills continue to be used, and the Mwari religious tradition is closely associated with Matobo.",
+            "features": ["Distinctive granite kopjes, balancing boulders and natural rock shelters.", "One of the highest concentrations of rock art in southern Africa.", "Rock paintings showing people, animals and aspects of Stone Age life.", "Sacred shrines associated with continuing spiritual traditions.", "Archaeological evidence spanning an exceptionally long period of human occupation."],
+            "unesco": "Matobo Hills was inscribed on the UNESCO World Heritage List in 2003 under cultural criteria (iii), (v) and (vi). UNESCO highlights its outstanding rock art, the long relationship between communities and landscape, and the continuing Mwari religious tradition.",
+            "protect": ["Never touch, trace, wet or rub rock paintings.", "Do not scratch, write or draw on rock surfaces.", "Do not remove archaeological objects, stones or cultural material.", "Respect sacred places and follow authorised site guidance."],
+            "facts": ["UNESCO states that Matobo's rock art dates back at least 13,000 years.", "The hills contain abundant natural shelters formed by huge granite boulders.", "Matobo combines archaeology, rock art, landscape and living spirituality."],
+            "significance": "Matobo Hills is important because it preserves ancient artistic expression, deep archaeological time, dramatic geology and cultural traditions that remain meaningful to communities.",
+        },
+        "isiNdebele": {
+            "name": "Amagquma eMatobo", "subtitle": "Amadwala egranite, imidwebo yasendulo lamasiko angcwele aphilayo",
+            "location": "Matabeleland South, Zimbabwe", "inscribed": "2003", "criteria": "(iii), (v), (vi)",
+            "history": "IMatobo ilobufakazi bokuhlala kwabantu obude kakhulu. I-UNESCO ithi ubufakazi bemivubukulo bufinyelela okungenani eminyakeni engu-500,000, kanti imidwebo yamadwala ihlehlela emuva okungenani iminyaka engu-13,000.",
+            "culture": "IMatobo yindawo yesiko lomoya elisaphilayo. Izindawo ezingcwele zisasebenza emphakathini, futhi isiko likaMwari lihlobene kakhulu lamagquma.",
+            "features": ["Amagquma egranite lamatshe amakhulu abhalansile.", "Enye yezindawo ezilemidwebo yamadwala eminengi kakhulu eningizimu ye-Afrika.", "Imidwebo ekhombisa abantu lezinyamazana.", "Izindawo ezingcwele ezisetshenziswa emasikweni omoya.", "Ubufakazi bemivubukulo besikhathi eside kakhulu."],
+            "unesco": "IMatobo Hills yafakwa ku-UNESCO ngo-2003 ngaphansi kwemigomo (iii), (v) lo-(vi), ngenxa yemidwebo yamadwala, ubudlelwano phakathi kwabantu lendawo kanye lesiko likaMwari.",
+            "protect": ["Ungathinti, umanzise kumbe ukhuhle imidwebo yamadwala.", "Ungabhali kumbe udwebe emadwaleni.", "Ungasusi izinto zemivubukulo.", "Hlonipha izindawo ezingcwele futhi ulalele abaqondisi."],
+            "facts": ["Imidwebo ihlehlela emuva okungenani iminyaka engu-13,000.", "Amatshe amakhulu enza izindawo zokukhosela zemvelo.", "IMatobo ihlanganisa imivubukulo, ubuciko lamasiko omoya."],
+            "significance": "IMatobo ibalulekile ngoba ihlanganisa ubuciko basendulo, umlando omude, indawo emangalisayo kanye lamasiko asaphila.",
+        },
+        "Shona": {
+            "name": "Matobo Hills", "subtitle": "Matombo egranite, rock art yekare netsika dzinoyera dzichiri kurarama",
+            "location": "Matabeleland South, Zimbabwe", "inscribed": "2003", "criteria": "(iii), (v), (vi)",
+            "history": "Matobo ine humbowo hwenguva refu kwazvo hwekugara kwevanhu. UNESCO inoti archaeology inoratidza kugara kwevanhu kwemakore angangoita 500,000 kana kupfuura, uye rock art inodzokera kumashure kwemakore angangoita 13,000.",
+            "culture": "Matobo inzvimbo yetsika nemweya ichiri kushandiswa. Nzvimbo dzinoyera dzichiri kukosha, uye tsika yaMwari ine hukama hwakasimba nemakomo aya.",
+            "features": ["Makomo egranite nematombo makuru anoyevedza.", "Imwe yenzvimbo dzine rock art yakawanda kumaodzanyemba kweAfrica.", "Mifananidzo inoratidza vanhu nemhuka.", "Nzvimbo dzinoyera dzine tsika dzemweya.", "Humbowo hwearchaeology hwenguva refu kwazvo."],
+            "unesco": "Matobo Hills yakanyorwa neUNESCO muna 2003 pasi pemaitiro (iii), (v) na(vi), nekuda kwerock art, hukama hwevanhu nenzvimbo uye tsika yaMwari.",
+            "protect": ["Usabata, kunyudza kana kukwesha rock art.", "Usanyora kana kudhirowa pamatombo.", "Usabvisa zvinhu zvearchaeology.", "Remekedza nzvimbo dzinoyera uye tevera mirayiridzo."],
+            "facts": ["UNESCO inoti rock art yeMatobo ine makore angangoita 13,000 kana kupfuura.", "Matombo makuru anogadzira natural shelters.", "Matobo inosanganisa archaeology, art, landscape netsika dzemweya."],
+            "significance": "Matobo yakakosha nekuti inosanganisa art yekare, nhoroondo refu, geology inoshamisa uye tsika dzichiri kurarama.",
+        },
+    },
+    "great": {
+        "English": {
+            "name": "Great Zimbabwe", "subtitle": "A monumental Shona stone city and national symbol",
+            "location": "About 30 km from Masvingo, Zimbabwe", "inscribed": "1986", "criteria": "(i), (iii), (vi)",
+            "history": "Great Zimbabwe was founded in the 11th century and the World Heritage property was built principally between about 1100 and 1450 AD. It became a major political, economic and cultural centre of Shona civilisation and an important trading centre.",
+            "culture": "Great Zimbabwe demonstrates sophisticated African state organisation, specialised craftsmanship, architecture and long-distance exchange. Its name and the famous stone-carved birds became powerful symbols of modern Zimbabwe.",
+            "features": ["The Hill Ruins, occupied continuously from the 11th to the 15th centuries.", "The Great Enclosure, largely dating to the 14th century.", "The high Conical Tower inside the Great Enclosure.", "Valley Ruins with domestic structures and dry-stone masonry.", "Steatite (soapstone) bird sculptures associated with ritual and national symbolism."],
+            "unesco": "Great Zimbabwe National Monument was inscribed on the UNESCO World Heritage List in 1986 under criteria (i), (iii) and (vi). UNESCO describes it as a unique testimony to Shona civilisation between the 11th and 15th centuries.",
+            "protect": ["Do not climb, sit or stand on ancient stone walls.", "Do not move or remove stones and archaeological material.", "Follow authorised visitor paths and site instructions.", "Avoid graffiti, littering and actions that could destabilise masonry."],
+            "facts": ["UNESCO dates the principal construction of the property to about 1100–1450 AD.", "The Great Enclosure dates mainly to the 14th century.", "The city was an important centre of trade and is renowned for exceptional dry-stone craftsmanship."],
+            "significance": "Great Zimbabwe is one of Africa's most important archaeological monuments and a powerful demonstration of indigenous African urbanism, engineering, political organisation and trade.",
+        },
+        "isiNdebele": {
+            "name": "Great Zimbabwe", "subtitle": "Idolobho elikhulu lamatshe lamaShona lophawu lwelizwe",
+            "location": "Cishe 30 km ukusuka eMasvingo, Zimbabwe", "inscribed": "1986", "criteria": "(i), (iii), (vi)",
+            "history": "IGreat Zimbabwe yasungulwa ngekhulu le-11, futhi indawo enkulu yakhiwa phakathi kuka-1100 lo-1450 AD. Yaba yisikhungo esikhulu sempucuko yamaShona, sezombusazwe, umnotho lamasiko.",
+            "culture": "Indawo ikhombisa ukuhleleka kombuso wase-Afrika, ubuciko bokwakha, umsebenzi wezandla kanye lokuthengiselana kwamabanga amade.",
+            "features": ["IHill Ruins eyahlalwa kusukela ngekhulu le-11 kusiya kwele-15.", "IGreat Enclosure, ikakhulu yekhulu le-14.", "IConical Tower.", "IValley Ruins le-dry-stone masonry.", "Izinyoni ezabazwa nge-steatite/soapstone."],
+            "unesco": "IGreat Zimbabwe National Monument yafakwa ku-UNESCO ngo-1986 ngaphansi kwemigomo (i), (iii) lo-(vi). I-UNESCO iyichaza njengobufakazi obubalulekileyo bempucuko yamaShona phakathi kwekhulu le-11 lele-15.",
+            "protect": ["Ungakhweli kumbe uhlale phezu kwemiduli yasendulo.", "Ungasusi amatshe kumbe izinto zemivubukulo.", "Sebenzisa imizila esemthethweni.", "Gwema ukubhala, ukulahla ingcekeza lokulimaza imiduli."],
+            "facts": ["Ukwakhiwa okuyinhloko kwenzeka cishe phakathi kuka-1100 lo-1450 AD.", "IGreat Enclosure ingeyekhulu le-14 ikakhulu.", "IGreat Zimbabwe yayiyisikhungo esibalulekileyo sokuthengiselana."],
+            "significance": "IGreat Zimbabwe iyisibonelo esikhulu sobuciko bokwakha, ukuhleleka kombuso, umnotho kanye lamasiko ase-Afrika ngaphambi kobukoloni.",
+        },
+        "Shona": {
+            "name": "Great Zimbabwe", "subtitle": "Guta guru rematombo reShona uye chiratidzo chenyika",
+            "location": "Anenge 30 km kubva kuMasvingo, Zimbabwe", "inscribed": "1986", "criteria": "(i), (iii), (vi)",
+            "history": "Great Zimbabwe yakavambwa muzana remakore rechi11, uye chikamu chikuru chenzvimbo chakavakwa pakati pa1100 na1450 AD. Yakava nzvimbo huru yeShona civilisation, zvematongerwo enyika, hupfumi netsika.",
+            "culture": "Nzvimbo iyi inoratidza hutongi hwakarongeka, hunyanzvi hwekuvaka, crafts uye kutengeserana kwemadaro marefu.",
+            "features": ["Hill Ruins dzakagarwa kubva muzana remakore rechi11 kusvika rechi15.", "Great Enclosure, zvikuru yezana remakore rechi14.", "Conical Tower.", "Valley Ruins nedry-stone masonry.", "Steatite/soapstone bird sculptures."],
+            "unesco": "Great Zimbabwe National Monument yakanyorwa neUNESCO muna 1986 pasi pemaitiro (i), (iii) na(vi). UNESCO inoiona seuchapupu hwakasiyana hweShona civilisation kubva muzana remakore rechi11 kusvika rechi15.",
+            "protect": ["Usakwira kana kugara pamadziro ekare.", "Usabvisa matombo kana archaeology material.", "Shandisa nzira dzakatenderwa.", "Dzivisa graffiti, marara uye kukuvadza madziro."],
+            "facts": ["Chikamu chikuru chenzvimbo chakavakwa pakati pa1100 na1450 AD.", "Great Enclosure inonyanya kubva muzana remakore rechi14.", "Great Zimbabwe yaiva nzvimbo yakakosha yekutengeserana."],
+            "significance": "Great Zimbabwe chiratidzo chakakosha cheAfrican urbanism, engineering, hutongi, hupfumi netsika.",
+        },
+    },
+    "khami": {
+        "English": {
+            "name": "Khami Ruins", "subtitle": "Terraced dry-stone architecture of the Torwa capital",
+            "location": "About 22 km west of Bulawayo, Zimbabwe", "inscribed": "1986", "criteria": "(iii), (iv)",
+            "history": "Khami was the capital of the Torwa dynasty and developed as a major centre after the decline of Great Zimbabwe. UNESCO places the Torwa capital within roughly 1450–1650. The main stone-built settlement is therefore approximately 400–600 years old rather than having one exact construction year.",
+            "culture": "Khami reflects political authority, social organisation, local craftsmanship, spiritual meaning and long-distance trade. It continued the broader Zimbabwe stone-building tradition while developing distinctive architectural features of its own.",
+            "features": ["Complex platforms and stone-faced terraces.", "Retaining or revetment walls used extensively in the architecture.", "Elaborate chevron and chequered wall decoration.", "The Hill Ruin associated with the chief's residence.", "Imported objects showing trade connections with Europe, China and the wider world."],
+            "unesco": "Khami Ruins National Monument was inscribed on the UNESCO World Heritage List in 1986 under criteria (iii) and (iv). UNESCO highlights its distinctive later development of the Zimbabwe stone-building tradition, decorated walls and evidence of long-distance trade.",
+            "protect": ["Do not climb or lean on the ancient terrace and retaining walls.", "Never remove pottery, stone or archaeological objects.", "Stay on visitor routes and avoid disturbing archaeological deposits.", "Report damage to site staff instead of moving or repairing objects yourself."],
+            "facts": ["Khami lies about 22 km west of Bulawayo.", "UNESCO identifies it as the capital of the Torwa dynasty, broadly dating 1450–1650.", "Objects from Europe and China demonstrate Khami's role in long-distance trade."],
+            "significance": "Khami is important because it shows how Zimbabwe's monumental stone-building tradition evolved after Great Zimbabwe, with distinctive terraces, retaining walls and elaborate decoration.",
+        },
+        "isiNdebele": {
+            "name": "Amanxiwa eKhami", "subtitle": "Amathala lamadwala enhloko-dolobha yeTorwa",
+            "location": "Cishe 22 km entshonalanga yeBulawayo, Zimbabwe", "inscribed": "1986", "criteria": "(iii), (iv)",
+            "history": "IKhami yayiyinhloko-dolobha yobukhosi beTorwa futhi yakhula ngemva kokwehla kweGreat Zimbabwe. I-UNESCO ibeka isikhathi sayo esikhulu cishe phakathi kuka-1450 lo-1650. Ngakho amanxiwa amakhulu akhiwe ngamatshe alinganiselwa eminyakeni engu-400 kuya ku-600 ubudala.",
+            "culture": "IKhami ikhombisa amandla okubusa, ukuhleleka kwabantu, ubuciko, amasiko omoya kanye lokuthengiselana kwamabanga amade.",
+            "features": ["Amathala amakhulu lamaplatform akhiwe ngamatshe.", "Imiduli yokubamba umhlabathi esetshenziswa kakhulu.", "Imihlobiso ye-chevron le-chequered emidulini.", "IHill Ruin ehlotshaniswa lendawo yenkosi.", "Izinto ezivela eYurophu laseChina ezibonisa ukuhweba kwamabanga amade."],
+            "unesco": "IKhami Ruins National Monument yafakwa ku-UNESCO ngo-1986 ngaphansi kwemigomo (iii) lo-(iv), ngenxa yezakhiwo zayo ezihlukileyo, imihlobiso kanye lobufakazi bokuthengiselana.",
+            "protect": ["Ungakhweli emidulini yamathala.", "Ungasusi pottery, amatshe kumbe izinto zemivubukulo.", "Hamba emizileni yezivakashi.", "Bika umonakalo kubasebenzi bendawo."],
+            "facts": ["IKhami icishe ibe 22 km entshonalanga yeBulawayo.", "Yayiyinhloko-dolobha yeTorwa cishe phakathi kuka-1450 lo-1650.", "Izinto zaseYurophu laseChina zibonisa ukuhweba kwamabanga amade."],
+            "significance": "IKhami ikhombisa ukuthi isiko lokwakha ngamatshe eZimbabwe laqhubeka futhi laguquka ngemva kweGreat Zimbabwe.",
+        },
+        "Shona": {
+            "name": "Khami Ruins", "subtitle": "Terraced dry-stone architecture yeguta guru reTorwa",
+            "location": "Anenge 22 km kumadokero kweBulawayo, Zimbabwe", "inscribed": "1986", "criteria": "(iii), (iv)",
+            "history": "Khami yaiva guta guru redzinza reTorwa uye yakakura mushure mekuderera kweGreat Zimbabwe. UNESCO inoisa nguva huru yeTorwa capital pakati pa1450 na1650. Saka main stone-built settlement ine makore anenge 400 kusvika 600, kwete gore rimwe chete rekuvakwa.",
+            "culture": "Khami inoratidza hutongi, kurongeka kwevanhu, craftsmanship, zvemweya uye kutengeserana kwemadaro marefu.",
+            "features": ["Platforms nema terraces ane stone facing.", "Retaining kana revetment walls.", "Chevron nechequered wall decoration.", "Hill Ruin ine hukama nenzvimbo yemambo.", "Zvinhu zvakabva kuEurope neChina zvinoratidza long-distance trade."],
+            "unesco": "Khami Ruins National Monument yakanyorwa neUNESCO muna 1986 pasi pemaitiro (iii) na(iv), nekuda kwearchitecture yayo, wall decoration uye humbowo hwekutengeserana.",
+            "protect": ["Usakwira kana kutsamira pamadziro ema terraces.", "Usabvisa pottery, matombo kana archaeology material.", "Shandisa nzira dzevashanyi.", "Bika kukuvara kuvashandi venzvimbo."],
+            "facts": ["Khami iri anenge 22 km kumadokero kweBulawayo.", "Yaiva capital yeTorwa, zvikuru pakati pa1450 na1650.", "Zvinhu zveEurope neChina zvinoratidza long-distance trade."],
+            "significance": "Khami inoratidza kushanduka kweZimbabwe stone-building tradition mushure meGreat Zimbabwe.",
+        },
+    },
+}
 
-    if any(x in q for x in [
-        "compare", "difference", "differences",
-        "umehluko", "qhathanisa", "musiyano", "enzanisa"
-    ]):
-        return kb["compare"]
+QUIZ = {
+    "English": [
+        ("Which site has one of the highest concentrations of rock art in southern Africa?", ["Great Zimbabwe", "Matobo Hills", "Khami Ruins", "Mana Pools"], 1, "Matobo Hills is renowned for one of southern Africa's highest concentrations of rock art."),
+        ("According to UNESCO, Matobo rock art dates back at least about how long?", ["500 years", "2,000 years", "13,000 years", "100 years"], 2, "UNESCO states that Matobo's rock-art tradition dates back at least 13,000 years."),
+        ("When was Great Zimbabwe principally built?", ["1100–1450 AD", "1700–1850 AD", "1900–1950 AD", "500–700 AD"], 0, "UNESCO dates the principal construction of Great Zimbabwe to about 1100–1450 AD."),
+        ("Which part of Great Zimbabwe dates mainly to the 14th century?", ["Great Enclosure", "Khami Hill Ruin", "Matobo caves", "Victoria Falls bridge"], 0, "The Great Enclosure dates mainly to the 14th century."),
+        ("What material were the famous Zimbabwe Birds carved from?", ["Steel", "Steatite/soapstone", "Glass", "Ivory"], 1, "The famous bird sculptures are carved from steatite, commonly called soapstone."),
+        ("Khami was the capital of which dynasty?", ["Torwa", "Roman", "Ottoman", "Mughal"], 0, "Khami was the capital of the Torwa dynasty."),
+        ("What broad period does UNESCO associate with the Torwa capital at Khami?", ["1450–1650", "1850–1950", "900–1000", "2000–2020"], 0, "UNESCO describes Khami as the Torwa capital within roughly 1450–1650."),
+        ("Which feature is especially characteristic of Khami?", ["Stone-faced terraces and retaining walls", "Glass towers", "Steel bridges", "Mud pyramids"], 0, "Khami is especially noted for platforms, terraces, retaining walls and decorative dry-stone masonry."),
+        ("What should a visitor do near Matobo rock paintings?", ["Touch them", "Wet them", "Leave them untouched", "Trace them"], 2, "Rock paintings should not be touched, wetted, traced or rubbed."),
+        ("Which two sites provide strong evidence of long-distance trade?", ["Great Zimbabwe and Khami", "Matobo and Mana Pools", "Only Matobo", "None"], 0, "Both Great Zimbabwe and Khami provide archaeological evidence of long-distance trade."),
+    ],
+    "isiNdebele": [
+        ("Yiphi indawo elemidwebo yamadwala eminengi kakhulu eningizimu ye-Afrika?", ["Great Zimbabwe", "Matobo Hills", "Khami Ruins", "Mana Pools"], 1, "IMatobo Hills idume kakhulu ngemidwebo yamadwala."),
+        ("Imidwebo yaseMatobo ihlehlela emuva okungenani iminyaka emingaki?", ["500", "2,000", "13,000", "100"], 2, "I-UNESCO ithi imidwebo ihlehlela emuva okungenani iminyaka engu-13,000."),
+        ("IGreat Zimbabwe yakhiwa ikakhulu ngasiphi isikhathi?", ["1100–1450 AD", "1700–1850 AD", "1900–1950 AD", "500–700 AD"], 0, "Ukwakhiwa okuyinhloko kwenzeka phakathi kuka-1100 lo-1450 AD."),
+        ("Yiphi ingxenye yeGreat Zimbabwe eyakhiwa ikakhulu ngekhulu le-14?", ["Great Enclosure", "Khami Hill Ruin", "Matobo caves", "Victoria Falls bridge"], 0, "IGreat Enclosure ingeyekhulu le-14 ikakhulu."),
+        ("IZimbabwe Birds zabazwa ngeliphi ilitshe?", ["Steel", "Steatite/soapstone", "Glass", "Ivory"], 1, "Zabazwa nge-steatite, ebizwa njalo nge-soapstone."),
+        ("IKhami yayiyinhloko-dolobha yobukhosi bani?", ["Torwa", "Roman", "Ottoman", "Mughal"], 0, "IKhami yayiyinhloko-dolobha yeTorwa."),
+        ("Isikhathi esikhulu seTorwa eKhami sasiphakathi kwamiphi iminyaka?", ["1450–1650", "1850–1950", "900–1000", "2000–2020"], 0, "I-UNESCO ibeka isikhathi esikhulu cishe phakathi kuka-1450 lo-1650."),
+        ("Yini ephawuleka kakhulu eKhami?", ["Amathala lamadwala lemiduli yokubamba", "Glass towers", "Steel bridges", "Mud pyramids"], 0, "IKhami idume ngamathala, retaining walls lemihlobiso yamatshe."),
+        ("Kumele wenzeni eduze kwemidwebo yaseMatobo?", ["Uyithinte", "Uyimanzise", "Uyitshiye ungayithinti", "Uyilandele ngomdwebo"], 2, "Imidwebo kumele ingathintwa kumbe imanziswe."),
+        ("Yiziphi indawo ezimbili ezilobufakazi bokuhweba kwamabanga amade?", ["Great Zimbabwe leKhami", "Matobo leMana Pools", "Matobo kuphela", "Azikho"], 0, "IGreat Zimbabwe leKhami zilobufakazi bokuthengiselana kwamabanga amade."),
+    ],
+    "Shona": [
+        ("Ndeipi nzvimbo ine rock art yakawanda zvikuru kumaodzanyemba kweAfrica?", ["Great Zimbabwe", "Matobo Hills", "Khami Ruins", "Mana Pools"], 1, "Matobo Hills inozivikanwa zvikuru nerock art."),
+        ("Rock art yeMatobo inodzokera kumashure kwemakore angangoita mangani kana kupfuura?", ["500", "2,000", "13,000", "100"], 2, "UNESCO inoti rock art ine makore angangoita 13,000 kana kupfuura."),
+        ("Great Zimbabwe yakavakwa zvikuru panguva ipi?", ["1100–1450 AD", "1700–1850 AD", "1900–1950 AD", "500–700 AD"], 0, "UNESCO inoisa principal construction pakati pa1100 na1450 AD."),
+        ("Ndeipi part yeGreat Zimbabwe inonyanya kubva muzana remakore rechi14?", ["Great Enclosure", "Khami Hill Ruin", "Matobo caves", "Victoria Falls bridge"], 0, "Great Enclosure inonyanya kubva muzana remakore rechi14."),
+        ("Zimbabwe Birds dzakavezwa nechii?", ["Steel", "Steatite/soapstone", "Glass", "Ivory"], 1, "Dzaka vezwa nesteatite, inowanzonzi soapstone."),
+        ("Khami yaiva capital yedzinza ripi?", ["Torwa", "Roman", "Ottoman", "Mughal"], 0, "Khami yaiva capital yeTorwa dynasty."),
+        ("UNESCO inoisa nguva huru yeTorwa capital paKhami papi?", ["1450–1650", "1850–1950", "900–1000", "2000–2020"], 0, "Nguva huru iri pakati pa1450 na1650."),
+        ("Chii chinonyanya kuzivikanwa paKhami?", ["Stone-faced terraces neretaining walls", "Glass towers", "Steel bridges", "Mud pyramids"], 0, "Khami inozivikanwa nema terraces, retaining walls uye decorative dry-stone masonry."),
+        ("Mushanyi anofanira kuita sei pedyo nerock art yeMatobo?", ["Kuibata", "Kuinyorovesa", "Kusiya isina kubatwa", "Ku trace"], 2, "Rock art haifaniri kubatwa kana kunyudzwa."),
+        ("Ndedzipi nzvimbo mbiri dzine humbowo hwelong-distance trade?", ["Great Zimbabwe neKhami", "Matobo neMana Pools", "Matobo chete", "Hapana"], 0, "Great Zimbabwe neKhami zvose zvine humbowo hwekutengeserana kwemadaro marefu."),
+    ],
+}
 
-    if any(x in q for x in [
-        "unesco", "world heritage", "inscribed",
-        "year", "unyaka", "gore"
-    ]):
-        return kb["unesco"]
 
-    if any(x in q for x in [
-        "protect", "conservation", "preserve",
-        "damage", "vikela", "chengetedza", "kuchengetedza"
-    ]):
-        return kb["protect"]
+def normalize(text: str) -> str:
+    return re.sub(r"[^a-z0-9\s\-]", " ", text.lower()).strip()
 
-    if any(x in q for x in [
-        "trade", "commerce", "gold",
-        "kutengesa", "ukuthengiselana"
-    ]):
-        return kb["trade"]
 
-    if any(x in q for x in [
-        "bird", "birds", "inyoni", "shiri"
-    ]):
-        return kb["birds"]
+def assistant_answer(question: str, lang: str) -> str:
+    q = normalize(question)
+    R = {
+        "English": {
+            "great_age": "Great Zimbabwe was not built in a single year. UNESCO dates the principal construction of the property to about 1100–1450 AD. The settlement was founded in the 11th century, and the Great Enclosure dates mainly to the 14th century.",
+            "great_who": "Great Zimbabwe was built by Shona people—the ancestors of Shona-speaking communities. UNESCO describes the site as a unique testimony to Shona civilisation between the 11th and 15th centuries.",
+            "great_features": "Great Zimbabwe has three principal groups: the Hill Ruins, the Great Enclosure and the Valley Ruins. The Great Enclosure contains a narrow passage and the famous Conical Tower. Much of the monumental masonry was built with carefully fitted stone without mortar.",
+            "great_trade": "Great Zimbabwe was an important trading centre. Archaeological evidence shows links between the interior of southern Africa and wider Indian Ocean trade networks.",
+            "birds": "The Zimbabwe Birds are carved steatite, or soapstone, bird sculptures found at Great Zimbabwe. They are among the site's most famous artefacts and later became major national symbols of Zimbabwe.",
+            "khami_age": "Khami does not have one exact construction year. UNESCO identifies it as the capital of the Torwa dynasty, broadly associated with about 1450–1650. So the main stone-built ruins are roughly 400–600 years old today.",
+            "khami_history": "Khami rose as a major centre after the decline of Great Zimbabwe and served as the capital of the Torwa dynasty. UNESCO associates the Torwa capital with roughly 1450–1650.",
+            "khami_features": "Khami is especially known for stone-faced platforms and terraces, retaining or revetment walls, narrow passageways and elaborate chevron and chequered decoration.",
+            "khami_trade": "Khami was an important long-distance trade centre. UNESCO records imported material including objects from Europe and China, showing links to the wider world.",
+            "matobo_age": "Matobo has a very deep human history. UNESCO reports archaeological occupation extending for at least 500,000 years, while its rock art dates back at least 13,000 years.",
+            "matobo_art": "Matobo Hills has one of the highest concentrations of rock art in southern Africa. UNESCO says the paintings date back at least 13,000 years and provide valuable evidence about Stone Age societies.",
+            "matobo_spiritual": "Matobo is a living sacred landscape. Shrines and sacred places are still used by communities, and the Mwari religious tradition is closely centred on the hills.",
+            "unesco": "Great Zimbabwe and Khami Ruins were inscribed on the UNESCO World Heritage List in 1986. Matobo Hills was inscribed in 2003.",
+            "compare": "Great Zimbabwe is best known for monumental freestanding dry-stone architecture such as the Great Enclosure. Khami represents a later development of the same broad Zimbabwe stone-building tradition and is especially known for terraces, retaining walls and rich decoration. Matobo is different: its heritage value centres on rock art, a granite cultural landscape and continuing sacred traditions.",
+            "protect": "Respect the sites by not touching rock art, not climbing ancient walls, not removing stones or artefacts, staying on authorised paths and avoiding graffiti or littering.",
+        },
+        "isiNdebele": {
+            "great_age": "IGreat Zimbabwe ayakhiwanga ngomnyaka owodwa. I-UNESCO ibeka ukwakhiwa okuyinhloko phakathi kuka-1100 lo-1450 AD. Yasungulwa ngekhulu le-11, kanti iGreat Enclosure ingeyekhulu le-14 ikakhulu.",
+            "great_who": "IGreat Zimbabwe yakhiwa ngabantu bamaShona, okhokho bemiphakathi ekhuluma isiShona.",
+            "great_features": "IGreat Zimbabwe ihlanganisa iHill Ruins, iGreat Enclosure leValley Ruins. IGreat Enclosure ileConical Tower, futhi imiduli eminengi yakhiwa ngamatshe ngaphandle kodaka.",
+            "great_trade": "IGreat Zimbabwe yayiyisikhungo esibalulekileyo sokuthengiselana futhi yayixhumene lenethiwekhi zokuhweba ezazifika e-Indian Ocean.",
+            "birds": "IZimbabwe Birds yizithombe zezinyoni ezabazwa nge-steatite/soapstone ezatholakala eGreat Zimbabwe. Zaba luphawu olukhulu lwelizwe.",
+            "khami_age": "IKhami ayilawo umnyaka owodwa wokwakhiwa. I-UNESCO iyibeka njengenhloko-dolobha yeTorwa cishe phakathi kuka-1450 lo-1650. Ngakho amanxiwa amakhulu amatshe alinganiselwa eminyakeni engu-400 kuya ku-600 ubudala.",
+            "khami_history": "IKhami yakhula yaba yisikhungo esikhulu ngemva kokwehla kweGreat Zimbabwe futhi yaba yinhloko-dolobha yeTorwa.",
+            "khami_features": "IKhami idume ngamaplatform lamathala amatshe, retaining walls, imizila emincane kanye lemihlobiso ye-chevron le-chequered.",
+            "khami_trade": "IKhami yayiyisikhungo sokuhweba kwamabanga amade. Izinto ezivela eYurophu laseChina zatholakala lapho.",
+            "matobo_age": "IMatobo ilomlando omude kakhulu. I-UNESCO ithi ubufakazi bokuhlala kwabantu budlula iminyaka engu-500,000, kanti imidwebo yamadwala ihlehlela emuva okungenani iminyaka engu-13,000.",
+            "matobo_art": "IMatobo ilenani elikhulu kakhulu lemidwebo yamadwala eningizimu ye-Afrika. Imidwebo ihlehlela emuva okungenani iminyaka engu-13,000.",
+            "matobo_spiritual": "IMatobo yindawo engcwele esaphilayo. Izindawo ezingcwele zisasebenza futhi isiko likaMwari lihlobene kakhulu lamagquma.",
+            "unesco": "IGreat Zimbabwe leKhami Ruins zafakwa ku-UNESCO ngo-1986. IMatobo Hills yafakwa ngo-2003.",
+            "compare": "IGreat Zimbabwe idume ngezakhiwo ezinkulu ze-dry-stone ezifana leGreat Enclosure. IKhami yathuthukisa isiko elifanayo ngamathala, retaining walls lemihlobiso. IMatobo yona idume ngemidwebo yamadwala, amadwala egranite lamasiko angcwele.",
+            "protect": "Hlonipha indawo ngokungathinti imidwebo, ukungakhweli imiduli, ukungasusi izinto zakudala, ukulandela imizila lokungalahli ingcekeza.",
+        },
+        "Shona": {
+            "great_age": "Great Zimbabwe haina kuvakwa mugore rimwe chete. UNESCO inoisa principal construction pakati pa1100 na1450 AD. Yakavambwa muzana remakore rechi11, uye Great Enclosure inonyanya kubva muzana remakore rechi14.",
+            "great_who": "Great Zimbabwe yakavakwa nevanhu veShona, madzitateguru evanhu vanotaura chiShona.",
+            "great_features": "Great Zimbabwe ine Hill Ruins, Great Enclosure neValley Ruins. Great Enclosure ine Conical Tower, uye monumental walls mazhinji akavakwa nematombo akanyatsorongedzwa pasina mortar.",
+            "great_trade": "Great Zimbabwe yaiva nzvimbo yakakosha yekutengeserana uye yaibatanidzwa nemisika yeIndian Ocean.",
+            "birds": "Zimbabwe Birds zvivezwa zveshiri zvakagadzirwa nesteatite/soapstone zvakawanikwa paGreat Zimbabwe. Zvakazova zviratidzo zvikuru zvenyika.",
+            "khami_age": "Khami haina gore rimwe chete rekuvakwa. UNESCO inoiona secapital yeTorwa inonyanya kubatanidzwa nenguva ya1450–1650. Saka main stone-built ruins ane makore anenge 400 kusvika 600.",
+            "khami_history": "Khami yakakura mushure mekuderera kweGreat Zimbabwe uye yakava capital yeTorwa dynasty.",
+            "khami_features": "Khami inozivikanwa nemaplatform, stone-faced terraces, retaining walls, passageways uye chevron nechequered decoration.",
+            "khami_trade": "Khami yaiva nzvimbo yakakosha yelong-distance trade. Zvinhu kubva kuEurope neChina zvakawanikwa ipapo.",
+            "matobo_age": "Matobo ine nhoroondo yakadzika zvikuru. UNESCO inoti archaeology inoratidza kugara kwevanhu kwemakore 500,000 kana kupfuura, uye rock art ine makore 13,000 kana kupfuura.",
+            "matobo_art": "Matobo ine imwe yema concentrations makuru erock art kumaodzanyemba kweAfrica. UNESCO inoti mifananidzo inodzokera kumashure kwemakore 13,000 kana kupfuura.",
+            "matobo_spiritual": "Matobo inzvimbo inoyera ichiri kurarama. Shrines dzichiri kushandiswa uye tsika yaMwari ine hukama hwakasimba nemakomo aya.",
+            "unesco": "Great Zimbabwe neKhami Ruins zvakanyorwa neUNESCO muna 1986. Matobo Hills yakanyorwa muna 2003.",
+            "compare": "Great Zimbabwe inozivikanwa nemonumental dry-stone architecture seGreat Enclosure. Khami yakazovandudza stone-building tradition iyi nema terraces, retaining walls nedecoration. Matobo inosiyana nekuda kwerock art, granite landscape netsika dzinoyera.",
+            "protect": "Remekedza nzvimbo nekusabata rock art, kusakwira pamadziro ekare, kusabvisa artefacts, kushandisa nzira dzakatenderwa uye kusasiya marara.",
+        },
+    }[lang]
 
-    if "torwa" in q:
-        return kb["torwa"]
+    if any(x in q for x in ["compare", "difference", "differences", "umehluko", "qhathanisa", "enzanisa", "musiyano"]):
+        return R["compare"]
+    if any(x in q for x in ["protect", "protection", "conservation", "preserve", "damage", "vikela", "chengetedza", "kuchengetedza"]):
+        return R["protect"]
 
-    if any(x in q for x in [
-        "matobo", "rock art", "cave",
-        "caves", "granite", "mwari",
-        "imihume", "amadwala", "mapako"
-    ]):
-        return kb["matobo"]
+    if "great zimbabwe" in q or "great zim" in q:
+        if any(x in q for x in ["who", "built by", "builder", "builders", "ngobani", "ndiani"]):
+            return R["great_who"]
+        if any(x in q for x in ["when", "what year", "how old", "age", "built", "constructed", "nini", "yakhiwa", "yakavakwa", "mdala"]):
+            return R["great_age"]
+        if any(x in q for x in ["trade", "trading", "commerce", "kutengesa", "ukuhweba", "ukuthengiselana"]):
+            return R["great_trade"]
+        return R["great_features"]
 
-    if any(x in q for x in [
-        "great zimbabwe", "great enclosure",
-        "conical tower", "hill complex", "soapstone"
-    ]):
-        return kb["great"]
+    if "khami" in q:
+        if any(x in q for x in ["when", "what year", "how old", "age", "built", "constructed", "nini", "yakhiwa", "yakavakwa", "mdala", "makore", "iminyaka"]):
+            return R["khami_age"]
+        if any(x in q for x in ["trade", "trading", "commerce", "europe", "china", "kutengesa", "ukuhweba", "ukuthengiselana"]):
+            return R["khami_trade"]
+        if any(x in q for x in ["terrace", "terraces", "wall", "walls", "architecture", "feature", "amathala", "izakhiwo"]):
+            return R["khami_features"]
+        return R["khami_history"]
 
-    if any(x in q for x in [
-        "khami", "terrace", "terraces",
-        "retaining wall", "amathala"
-    ]):
-        return kb["khami"]
+    if "matobo" in q or "rock art" in q or "rock painting" in q or "mwari" in q:
+        if any(x in q for x in ["how old", "age", "when", "date", "old", "mdala", "nini", "makore", "iminyaka"]):
+            return R["matobo_age"]
+        if "mwari" in q or any(x in q for x in ["spiritual", "sacred", "religion", "shrine", "ingcwele", "mweya", "dzinoyera"]):
+            return R["matobo_spiritual"]
+        return R["matobo_art"]
+
+    if any(x in q for x in ["bird", "birds", "inyoni", "shiri", "soapstone", "steatite"]):
+        return R["birds"]
+    if any(x in q for x in ["unesco", "world heritage", "inscribed", "listed"]):
+        return R["unesco"]
 
     if lang == "isiNdebele":
-        return (
-            "Ngiyakwazi ukuphendula ngeMatobo Hills, Great Zimbabwe leKhami Ruins. "
-            "Buza ngomlando, imidwebo yamadwala, izakhiwo, iTorwa, ukuhweba, "
-            "iUNESCO kumbe ukuvikela amagugu."
-        )
-
+        return "Buza ngeMatobo Hills, Great Zimbabwe kumbe Khami Ruins — iminyaka, abakhi, imidwebo yamadwala, izakhiwo, ukuhweba, UNESCO kumbe ukuvikela amagugu."
     if lang == "Shona":
-        return (
-            "Ndinogona kupindura nezveMatobo Hills, Great Zimbabwe neKhami Ruins. "
-            "Bvunza nezvenhoroondo, rock art, architecture, Torwa, trade, UNESCO "
-            "kana kuchengetedza nhaka."
-        )
-
-    return (
-        "I can help with Matobo Hills, Great Zimbabwe and Khami Ruins. "
-        "Ask about history, rock art, architecture, the Torwa state, trade, "
-        "UNESCO, conservation or comparisons."
-    )
+        return "Bvunza nezveMatobo Hills, Great Zimbabwe kana Khami Ruins — makore, vakavaka, rock art, architecture, trade, UNESCO kana kuchengetedza."
+    return "Ask me about Matobo Hills, Great Zimbabwe or Khami Ruins — dates, builders, rock art, architecture, trade, UNESCO, conservation or comparisons."
 
 
-# -----------------------------
-# Sidebar
-# -----------------------------
 with st.sidebar:
+    html(f"""
+    <div class="brand-box">
+        <h2>ROBO GUIDE</h2>
+    </div>
+    """)
 
-    st.markdown("## 🗿 ROBO GUIDE")
-    st.caption("Zimbabwe Heritage Explorer")
-
+    languages = ["English", "isiNdebele", "Shona"]
     selected_lang = st.selectbox(
-        T("language"),
-        ["English", "isiNdebele", "Shona"],
-        index=["English", "isiNdebele", "Shona"].index(st.session_state.lang),
-        key="language_selector_unique",
+        T("language"), languages,
+        index=languages.index(st.session_state.lang),
+        key="language_selector",
     )
 
     if selected_lang != st.session_state.lang:
@@ -1140,644 +656,245 @@ with st.sidebar:
         st.rerun()
 
     st.markdown(f"### {T('explore')}")
-
-    nav = [
-        ("🏠", T("home"), "home"),
-        ("⛰️", T("matobo"), "matobo"),
-        ("🏛️", T("great"), "great"),
-        ("🧱", T("khami"), "khami"),
-        ("🏆", T("quiz"), "quiz"),
-        ("💬", T("assistant"), "assistant"),
+    nav_items = [
+        (T("home"), "home"),
+        (T("matobo"), "matobo"),
+        (T("great"), "great"),
+        (T("khami"), "khami"),
+        (T("quiz"), "quiz"),
+        (T("assistant"), "assistant"),
     ]
 
-    for i, (icon, label, page) in enumerate(nav):
-        if st.button(
-            f"{icon}  {label}",
-            key=f"sidebar_nav_{page}_{i}",
-            use_container_width=True,
-        ):
-            go(page)
+    for i, (label, page_name) in enumerate(nav_items):
+        if st.button(label, key=f"nav_{page_name}_{i}", use_container_width=True):
+            go(page_name)
 
 
-# -----------------------------
-# Home page
-# -----------------------------
+def render_band():
+    html('<div class="heritage-band"></div>')
+
+
 def render_home():
-
-    st.markdown(
-        f"""
-        <div class="hero">
-            <h1>ROBO GUIDE</h1>
-            <h3>{escape(T('hero_sub'))}</h3>
-            <p>{escape(T('hero_text'))}</p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    render_band()
+    html(f"""
+    <div class="hero">
+        <h1>ROBO GUIDE</h1>
+        <h3>{escape(T('hero_sub'))}</h3>
+        <p>{escape(T('hero_text'))}</p>
+    </div>
+    """)
 
     st.markdown(f"## {T('choose')}")
-
     cols = st.columns(3)
-
-    for col, key in zip(
-        cols,
-        ["matobo", "great", "khami"]
-    ):
-
-        data = SITES[key][st.session_state.lang]
-
+    for col, site_key in zip(cols, ["matobo", "great", "khami"]):
+        d = SITES[site_key][st.session_state.lang]
         with col:
+            html(f"""
+            <div class="site-card">
+                <h3>{escape(d['name'])}</h3>
+                <p>{escape(d['subtitle'])}</p>
+                <span class="badge">UNESCO {escape(d['inscribed'])}</span>
+                <span class="badge">{escape(d['criteria'])}</span>
+            </div>
+            """)
+            if st.button(f"{T('open_site')} {d['name']}", key=f"home_open_{site_key}", use_container_width=True):
+                go(site_key)
 
-            st.markdown(
-                f"""
-                <div class="site-card">
-                    <div style="font-size:2.4rem">
-                        {SITES[key]['emoji']}
-                    </div>
-
-                    <h3>{escape(data['name'])}</h3>
-
-                    <p>{escape(data['subtitle'])}</p>
-
-                    <span class="badge">
-                        UNESCO {escape(data['inscribed'])}
-                    </span>
-
-                    <span class="badge">
-                        {escape(data['criteria'])}
-                    </span>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-
-            if st.button(
-                T("open_site"),
-                key=f"home_open_{key}",
-                use_container_width=True,
-            ):
-                go(key)
-
-    st.markdown("### Explore • Learn • Respect • Protect")
-
+    st.markdown("## Discover • Understand • Respect • Protect")
     a, b, c = st.columns(3)
-
     with a:
-        st.markdown(
-            """
-            <div class="info-card">
-                <h3>📚 Learn</h3>
-                <p>
-                Discover Zimbabwean history, architecture,
-                archaeology and living traditions.
-                </p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
+        html('<div class="info-card"><h3>Discover</h3><p>Meet the people, stories and places behind Zimbabwe\'s remarkable cultural heritage.</p></div>')
     with b:
-        st.markdown(
-            """
-            <div class="info-card">
-                <h3>🎯 Challenge</h3>
-                <p>
-                Earn Heritage Points through the
-                ROBO GUIDE Heritage Challenge.
-                </p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
+        html('<div class="info-card"><h3>Understand</h3><p>Explore accurate historical facts, architecture, archaeology, trade and living traditions.</p></div>')
     with c:
-        st.markdown(
-            """
-            <div class="info-card">
-                <h3>🌍 Protect</h3>
-                <p>
-                Learn simple actions visitors can take
-                to help preserve heritage sites.
-                </p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        html('<div class="info-card"><h3>Protect</h3><p>Learn respectful visitor behaviour that helps preserve fragile heritage for future generations.</p></div>')
+
+    html('<div class="source-note">Heritage facts in ROBO GUIDE are aligned to UNESCO World Heritage descriptions for Matobo Hills, Great Zimbabwe National Monument and Khami Ruins National Monument.</div>')
 
 
-# -----------------------------
-# Heritage site pages
-# -----------------------------
-def render_site(site_key):
-
-    data = SITES[site_key][st.session_state.lang]
-
-    st.markdown(
-        f"""
-        <div class="hero">
-            <h1 style="font-size:3rem">
-                {SITES[site_key]['emoji']} {escape(data['name'])}
-            </h1>
-
-            <h3>
-                {escape(data['subtitle'])}
-            </h3>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+def render_site(site_key: str):
+    render_band()
+    d = SITES[site_key][st.session_state.lang]
+    html(f"""
+    <div class="hero">
+        <h1 style="font-size:3.35rem">{escape(d['name'])}</h1>
+        <h3>{escape(d['subtitle'])}</h3>
+    </div>
+    """)
 
     c1, c2, c3 = st.columns(3)
+    with c1:
+        html(f'<div class="stat-card"><div class="stat-label">{escape(T("location"))}</div><div class="stat-value">{escape(d["location"])}</div></div>')
+    with c2:
+        html(f'<div class="stat-card"><div class="stat-label">{escape(T("inscribed"))}</div><div class="stat-value">{escape(d["inscribed"])}</div></div>')
+    with c3:
+        html(f'<div class="stat-card"><div class="stat-label">{escape(T("criteria"))}</div><div class="stat-value">{escape(d["criteria"])}</div></div>')
 
-    c1.metric(
-        T("location"),
-        data["location"]
-    )
+    st.markdown(f"## {T('history')}")
+    html(f'<div class="info-card"><p>{escape(d["history"])}</p></div>')
 
-    c2.metric(
-        T("inscribed"),
-        data["inscribed"]
-    )
+    st.markdown(f"## {T('culture')}")
+    html(f'<div class="info-card"><p>{escape(d["culture"])}</p></div>')
 
-    c3.metric(
-        T("criteria"),
-        data["criteria"]
-    )
+    st.markdown(f"## {T('features')}")
+    fcols = st.columns(2)
+    for i, item in enumerate(d["features"]):
+        with fcols[i % 2]:
+            html(f'<div class="fact-card"><h4>Heritage Feature</h4><p>{escape(item)}</p></div>')
 
-    st.markdown(f"### {T('history')}")
+    st.markdown(f"## {T('unesco')}")
+    html(f'<div class="unesco-card"><strong>UNESCO</strong><br><br>{escape(d["unesco"])}</div>')
 
-    st.markdown(
-        f"""
-        <div class="info-card">
-            <p>{escape(data['history'])}</p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    st.markdown(f"### {T('culture')}")
-
-    st.markdown(
-        f"""
-        <div class="info-card">
-            <p>{escape(data['culture'])}</p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    st.markdown(f"### {T('features')}")
-
-    cols = st.columns(2)
-
-    for i, item in enumerate(data["features"]):
-        with cols[i % 2]:
-
-            st.markdown(
-                f"""
-                <div class="fact-card">
-                    <h4>◆</h4>
-                    <p>{escape(item)}</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-
-    st.markdown(f"### {T('unesco')}")
-
-    st.markdown(
-        f"""
-        <div class="gold-strip">
-            {escape(data['unesco'])}
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    st.markdown(f"### {T('protect')}")
-
+    st.markdown(f"## {T('protect')}")
     pcols = st.columns(2)
-
-    for i, item in enumerate(data["protection"]):
-
+    for i, item in enumerate(d["protect"]):
         with pcols[i % 2]:
+            html(f'<div class="fact-card"><h4>Respect</h4><p>{escape(item)}</p></div>')
 
-            st.markdown(
-                f"""
-                <div class="fact-card">
-                    <h4>🛡️</h4>
-                    <p>{escape(item)}</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+    st.markdown(f"## {T('facts')}")
+    factcols = st.columns(3)
+    for i, item in enumerate(d["facts"]):
+        with factcols[i % 3]:
+            html(f'<div class="fact-card"><h4>Did you know?</h4><p>{escape(item)}</p></div>')
 
-    st.markdown(f"### {T('facts')}")
-
-    for item in data["facts"]:
-        st.markdown(f"- {item}")
-
-    st.markdown(f"### {T('significance')}")
-
-    st.info(data["significance"])
+    st.markdown(f"## {T('significance')}")
+    html(f'<div class="unesco-card">{escape(d["significance"])}</div>')
 
     left, right = st.columns(2)
-
     with left:
-
-        if st.button(
-            "🏆 " + T("quiz"),
-            key=f"site_quiz_{site_key}",
-            use_container_width=True,
-        ):
+        if st.button(T("quiz"), key=f"site_quiz_{site_key}", use_container_width=True):
             go("quiz")
-
     with right:
-
-        if st.button(
-            "💬 " + T("assistant"),
-            key=f"site_assistant_{site_key}",
-            use_container_width=True,
-        ):
+        if st.button(T("assistant"), key=f"site_assistant_{site_key}", use_container_width=True):
             go("assistant")
 
 
-# -----------------------------
-# Quiz
-# -----------------------------
 def render_quiz():
-
-    st.markdown(
-        f"""
-        <div class="hero">
-
-            <h1 style="font-size:3rem">
-                🏆 {escape(T('quiz_title'))}
-            </h1>
-
-            <p>
-                {escape(T('quiz_intro'))}
-            </p>
-
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    render_band()
+    html(f"""
+    <div class="hero">
+        <h1 style="font-size:3.2rem">{escape(T('quiz_title'))}</h1>
+        <p>{escape(T('quiz_intro'))}</p>
+    </div>
+    """)
 
     questions = QUIZ[st.session_state.lang]
-
     if st.session_state.quiz_finished:
-
         total = len(questions)
-
-        pct = round(
-            (
-                st.session_state.quiz_score
-                / total
-            )
-            * 100
-        )
-
-        achievement = (
-            T("guardian")
-            if pct >= 80
-            else T("guide")
-        )
-
+        pct = round((st.session_state.quiz_score / total) * 100)
+        achievement = T("guardian") if pct >= 80 else T("guide")
         c1, c2, c3 = st.columns(3)
-
-        c1.metric(
-            T("score"),
-            f"{st.session_state.quiz_score}/{total}",
-        )
-
-        c2.metric(
-            T("points"),
-            st.session_state.quiz_points,
-        )
-
-        c3.metric(
-            T("achievement"),
-            achievement,
-        )
-
-        st.success(
-            f"🎉 {achievement} — {pct}%"
-        )
-
-        if st.button(
-            T("restart"),
-            key="quiz_restart_unique",
-            use_container_width=True,
-        ):
+        c1.metric(T("score"), f"{st.session_state.quiz_score}/{total}")
+        c2.metric(T("points"), st.session_state.quiz_points)
+        c3.metric(T("achievement"), achievement)
+        if pct >= 80:
+            st.success(f"{achievement} — {pct}%")
+            st.balloons()
+        else:
+            st.info(f"{achievement} — {pct}%")
+        if st.button(T("restart"), key="quiz_restart", use_container_width=True):
             reset_quiz()
             st.rerun()
-
         return
 
     idx = st.session_state.quiz_index
-
     q, options, correct_idx, explanation = questions[idx]
-
-    st.progress(
-        idx / len(questions)
-    )
-
-    st.markdown(
-        f"### {T('question')} "
-        f"{idx + 1} / {len(questions)}"
-    )
-
-    st.markdown(
-        f"""
-        <div class="quiz-card">
-            <h3>{escape(q)}</h3>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    st.progress((idx + 1) / len(questions))
+    st.markdown(f"### {T('question')} {idx + 1} / {len(questions)}")
+    html(f'<div class="quiz-card"><h3>{escape(q)}</h3></div>')
 
     choice = st.radio(
-        "Choose one answer",
-        options,
-        index=None,
+        "Answer", options, index=None,
         key=f"quiz_radio_{st.session_state.lang}_{idx}",
         label_visibility="collapsed",
         disabled=st.session_state.quiz_answered,
     )
 
     if not st.session_state.quiz_answered:
-
-        if st.button(
-            T("submit"),
-            key=f"quiz_submit_{idx}",
-            use_container_width=True,
-        ):
-
+        if st.button(T("submit"), key=f"quiz_submit_{idx}", use_container_width=True):
             if choice is None:
-
-                st.warning(
-                    "Please choose an answer first."
-                )
-
+                st.warning("Please choose an answer first.")
             else:
-
                 st.session_state.quiz_choice = choice
-
                 st.session_state.quiz_answered = True
-
                 if options.index(choice) == correct_idx:
-
                     st.session_state.quiz_score += 1
                     st.session_state.quiz_points += 100
-
                 else:
-
                     st.session_state.quiz_points += 20
-
                 st.rerun()
-
     else:
-
-        chosen_idx = options.index(
-            st.session_state.quiz_choice
-        )
-
+        chosen_idx = options.index(st.session_state.quiz_choice)
         if chosen_idx == correct_idx:
-
-            st.success(
-                f"✅ {T('correct')} "
-                f"{explanation}"
-            )
-
+            st.success(f"{T('correct')} {explanation}")
         else:
-
-            st.error(
-                f"❌ {T('incorrect')} "
-                f"{explanation}"
-            )
-
-        c1, c2 = st.columns(2)
-
-        c1.metric(
-            T("score"),
-            st.session_state.quiz_score,
-        )
-
-        c2.metric(
-            T("points"),
-            st.session_state.quiz_points,
-        )
-
-        if st.button(
-            T("next"),
-            key=f"quiz_next_{idx}",
-            use_container_width=True,
-        ):
-
+            st.error(f"{T('incorrect')} {explanation}")
+        m1, m2 = st.columns(2)
+        m1.metric(T("score"), st.session_state.quiz_score)
+        m2.metric(T("points"), st.session_state.quiz_points)
+        if st.button(T("next"), key=f"quiz_next_{idx}", use_container_width=True):
             if idx + 1 >= len(questions):
-
                 st.session_state.quiz_finished = True
-
             else:
-
                 st.session_state.quiz_index += 1
                 st.session_state.quiz_answered = False
                 st.session_state.quiz_choice = None
-
             st.rerun()
 
 
-# -----------------------------
-# Heritage Assistant
-# -----------------------------
 def render_assistant():
-
-    st.markdown(
-        f"""
-        <div class="hero">
-
-            <h1 style="font-size:3rem">
-                💬 {escape(T('assistant_title'))}
-            </h1>
-
-            <p>
-                {escape(T('assistant_intro'))}
-            </p>
-
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    render_band()
+    html(f"""
+    <div class="hero">
+        <h1 style="font-size:3.1rem">{escape(T('assistant_title'))}</h1>
+        <p>{escape(T('assistant_intro'))}</p>
+    </div>
+    """)
 
     suggestions = {
-
-        "English": [
-            "What is special about Matobo rock art?",
-            "Who built Great Zimbabwe?",
-            "Why is the Great Enclosure important?",
-            "What is special about Khami terraces?",
-            "What was the Torwa state?",
-            "Compare all three heritage sites.",
-        ],
-
-        "isiNdebele": [
-            "Yini eqakathekileyo ngemidwebo yaseMatobo?",
-            "Ngobani abakha iGreat Zimbabwe?",
-            "Kungani iGreat Enclosure iqakathekile?",
-            "Yini ekhethekileyo ngamathala eKhami?",
-            "Yayiyini iTorwa state?",
-            "Qhathanisa zonke indawo ezintathu.",
-        ],
-
-        "Shona": [
-            "Chii chakakosha nezverock art yeMatobo?",
-            "Ndiani akavaka Great Zimbabwe?",
-            "Great Enclosure yakakosha nei?",
-            "Chii chakakosha nema terraces eKhami?",
-            "Torwa state yaive chii?",
-            "Enzanisa nzvimbo nhatu dzese.",
-        ],
+        "English": ["How old are the Khami Ruins?", "When was Great Zimbabwe built?", "Who built Great Zimbabwe?", "How old is Matobo rock art?", "What are the Zimbabwe Birds?", "Compare Great Zimbabwe, Khami and Matobo."],
+        "isiNdebele": ["Amanxiwa eKhami madala kangakanani?", "IGreat Zimbabwe yakhiwa nini?", "Ngobani abakha iGreat Zimbabwe?", "Imidwebo yaseMatobo midala kangakanani?", "Yini amaZimbabwe Birds?", "Qhathanisa iGreat Zimbabwe, iKhami leMatobo."],
+        "Shona": ["Khami Ruins ine makore mangani?", "Great Zimbabwe yakavakwa riini?", "Ndiani akavaka Great Zimbabwe?", "Rock art yeMatobo ine makore mangani?", "Zimbabwe Birds chii?", "Enzanisa Great Zimbabwe, Khami neMatobo."],
     }
 
-    st.markdown("#### Quick questions")
-
+    st.markdown(f"### {T('quick')}")
     cols = st.columns(2)
-
-    for i, prompt in enumerate(
-        suggestions[st.session_state.lang]
-    ):
-
+    for i, prompt in enumerate(suggestions[st.session_state.lang]):
         with cols[i % 2]:
-
-            if st.button(
-                prompt,
-                key=f"assistant_suggestion_{st.session_state.lang}_{i}",
-                use_container_width=True,
-            ):
-
-                answer = assistant_answer(
-                    prompt,
-                    st.session_state.lang,
-                )
-
-                st.session_state.chat.append(
-                    (
-                        prompt,
-                        answer,
-                    )
-                )
-
+            if st.button(prompt, key=f"assist_quick_{st.session_state.lang}_{i}", use_container_width=True):
+                st.session_state.chat.append((prompt, assistant_answer(prompt, st.session_state.lang)))
                 st.rerun()
 
     for question, answer in st.session_state.chat:
+        html(f'<div class="chat-user"><strong>You:</strong><br>{escape(question)}</div>')
+        html(f'<div class="chat-bot"><strong>ROBO GUIDE:</strong><br>{escape(answer)}</div>')
 
-        st.markdown(
-            f"""
-            <div class="chat-user">
-                <b>You:</b>
-                {escape(question)}
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+    with st.form("assistant_form", clear_on_submit=True):
+        question = st.text_input(T("ask"), key="assistant_input", placeholder=T("ask"))
+        submitted = st.form_submit_button(T("send"), use_container_width=True)
 
-        st.markdown(
-            f"""
-            <div class="chat-bot">
-                <b>ROBO GUIDE:</b>
-                {escape(answer)}
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    with st.form(
-        "assistant_form_unique",
-        clear_on_submit=True,
-    ):
-
-        question = st.text_input(
-            T("ask"),
-            key="assistant_text_unique",
-        )
-
-        submitted = st.form_submit_button(
-            T("send"),
-            use_container_width=True,
-        )
-
-        if submitted and question.strip():
-
-            answer = assistant_answer(
-                question,
-                st.session_state.lang,
-            )
-
-            st.session_state.chat.append(
-                (
-                    question.strip(),
-                    answer,
-                )
-            )
-
-            st.rerun()
-
-    if st.button(
-        T("clear"),
-        key="assistant_clear_unique",
-        use_container_width=True,
-    ):
-
-        st.session_state.chat = []
-
+    if submitted and question.strip():
+        st.session_state.chat.append((question.strip(), assistant_answer(question.strip(), st.session_state.lang)))
         st.rerun()
 
-    st.caption(
-        "ROBO GUIDE uses built-in heritage knowledge. "
-        "No paid API is required."
-    )
+    if st.button(T("clear"), key="assistant_clear", use_container_width=True):
+        st.session_state.chat = []
+        st.rerun()
+
+    html('<div class="source-note">ROBO GUIDE uses a built-in heritage knowledge base for these three sites. It does not require a paid AI API.</div>')
 
 
-# -----------------------------
-# Router
-# -----------------------------
 page = st.session_state.page
-
 if page == "home":
-
     render_home()
-
-elif page in [
-    "matobo",
-    "great",
-    "khami",
-]:
-
+elif page in {"matobo", "great", "khami"}:
     render_site(page)
-
 elif page == "quiz":
-
     render_quiz()
-
 elif page == "assistant":
-
     render_assistant()
-
 else:
-
     st.session_state.page = "home"
     st.rerun()
 
-
-# -----------------------------
-# Footer
-# -----------------------------
-st.markdown(
-    f"""
-    <div class="footer">
-        {escape(T('footer'))}
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+html(f'<div class="footer"><strong>ROBO GUIDE</strong><br>{escape(T("footer"))}</div>')
